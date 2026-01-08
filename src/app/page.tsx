@@ -1,65 +1,123 @@
-import Image from "next/image";
+import Link from "next/link";
+import { getFeaturedProjects } from "@/lib/projects";
+import { getAllPosts, formatDate } from "@/lib/posts";
 
 export default function Home() {
+  const featuredProjects = getFeaturedProjects().slice(0, 2);
+  const recentPosts = getAllPosts().slice(0, 2);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="mx-auto max-w-4xl px-6">
+      {/* Hero Section */}
+      <section className="py-20 sm:py-28">
+        <h1 className="font-heading text-4xl sm:text-5xl font-semibold tracking-tight text-foreground mb-6">
+          Developer & Builder
+        </h1>
+        <p className="text-xl sm:text-2xl text-foreground-muted leading-relaxed max-w-2xl mb-8">
+          I craft clean, performant web applications with a focus on user experience
+          and code quality. Currently exploring the intersection of design and engineering.
+        </p>
+        <div className="flex flex-wrap gap-4">
+          <Link
+            href="/projects"
+            className="inline-flex items-center px-6 py-3 bg-gold text-background font-medium rounded-md hover:bg-gold-light transition-colors"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            View Projects
+          </Link>
+          <Link
+            href="/about"
+            className="inline-flex items-center px-6 py-3 border border-border text-foreground font-medium rounded-md hover:border-gold hover:text-gold transition-colors"
           >
-            Documentation
-          </a>
+            About Me
+          </Link>
         </div>
-      </main>
+      </section>
+
+      {/* Featured Projects Section */}
+      <section className="py-16 border-t border-border">
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="font-heading text-2xl font-semibold">Featured Projects</h2>
+          <Link
+            href="/projects"
+            className="text-sm text-foreground-muted hover:text-gold transition-colors"
+          >
+            View all &rarr;
+          </Link>
+        </div>
+
+        <div className="grid gap-6">
+          {featuredProjects.map((project) => (
+            <Link
+              key={project.slug}
+              href={`/projects/${project.slug}`}
+              className="block p-6 bg-card border border-border rounded-lg hover:border-gold/50 hover:bg-card-hover transition-colors group"
+            >
+              <h3 className="font-heading text-lg font-semibold mb-2 group-hover:text-gold transition-colors">
+                {project.title}
+              </h3>
+              <p className="text-foreground-muted mb-4">{project.description}</p>
+              <div className="flex flex-wrap gap-2">
+                {project.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-xs px-2 py-1 bg-background-secondary rounded text-foreground-muted"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* Recent Blog Posts Section */}
+      <section className="py-16 border-t border-border">
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="font-heading text-2xl font-semibold">Recent Writing</h2>
+          <Link
+            href="/blog"
+            className="text-sm text-foreground-muted hover:text-gold transition-colors"
+          >
+            View all &rarr;
+          </Link>
+        </div>
+
+        <div className="grid gap-6">
+          {recentPosts.map((post) => (
+            <Link
+              key={post.slug}
+              href={`/blog/${post.slug}`}
+              className="block p-6 bg-card border border-border rounded-lg hover:border-gold/50 hover:bg-card-hover transition-colors group"
+            >
+              <div className="flex items-center gap-2 text-sm text-foreground-muted mb-2">
+                <time dateTime={post.date}>{formatDate(post.date)}</time>
+              </div>
+              <h3 className="font-heading text-lg font-semibold mb-2 group-hover:text-gold transition-colors">
+                {post.title}
+              </h3>
+              <p className="text-foreground-muted">{post.excerpt}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-16 border-t border-border text-center">
+        <h2 className="font-heading text-2xl font-semibold mb-4">
+          Let&apos;s work together
+        </h2>
+        <p className="text-foreground-muted mb-6 max-w-md mx-auto">
+          I&apos;m always open to discussing new projects, creative ideas, or
+          opportunities to be part of your vision.
+        </p>
+        <Link
+          href="mailto:hello@sonalisharma.dev"
+          className="inline-flex items-center px-6 py-3 bg-gold text-background font-medium rounded-md hover:bg-gold-light transition-colors"
+        >
+          Get in touch
+        </Link>
+      </section>
     </div>
   );
 }
