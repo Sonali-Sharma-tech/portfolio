@@ -1,36 +1,191 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
 
-## Getting Started
+# ✨ Sonali Sharma | Portfolio
 
-First, run the development server:
+**Throwing thoughts into the void & building what emerges**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+
+[**View Live**](https://sonalisharma.dev) · [**GitHub**](https://github.com/Sonali-Sharma-tech) · [**LinkedIn**](https://linkedin.com/in/sonali-sharma110114)
+
+</div>
+
+---
+
+## Preview
+
+<div align="center">
+
+| Home | Projects | About |
+|:---:|:---:|:---:|
+| Cinematic hero with floating orbs | Gallery with GitHub integration | Interactive skill showcase |
+
+</div>
+
+---
+
+## Features
+
+### Visual Excellence
+- **Floating Gradient Orbs** — Animated purple, pink & cyan orbs creating depth
+- **Naturalistic Fireflies** — Bioluminescent particles with realistic glow
+- **Glassmorphism UI** — Frosted glass effects with backdrop blur
+- **Scroll Animations** — Elements animate into view as you scroll
+- **Rainbow Border Hovers** — Gradient borders on interactive elements
+
+### Technical Highlights
+- **Next.js 16** with App Router
+- **TypeScript** for type safety
+- **Tailwind CSS v4** with CSS variables
+- **Server-Side Rendering** with static generation
+- **Responsive Design** — Mobile-first approach
+- **Reduced Motion Support** — Accessibility-friendly
+
+### Pages
+| Page | Description |
+|------|-------------|
+| `/` | Hero section, featured projects, blog preview, CTA |
+| `/projects` | Full project gallery linking to GitHub repos |
+| `/blog` | Article list with featured post highlight |
+| `/about` | Personal info, skills, interests, contact |
+
+---
+
+## Tech Stack
+
+```
+Frontend        Next.js 16 · React 19 · TypeScript
+Styling         Tailwind CSS v4 · CSS Animations
+Fonts           Cinzel (headings) · JetBrains Mono (code)
+Effects         Custom CSS keyframes · Scroll-driven animations
+Deployment      Vercel (recommended)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Quick Start
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+# Clone the repository
+git clone https://github.com/Sonali-Sharma-tech/portfolio.git
 
-## Learn More
+# Navigate to project
+cd portfolio
 
-To learn more about Next.js, take a look at the following resources:
+# Install dependencies
+npm install
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Start development server
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Open [http://localhost:3000](http://localhost:3000) to view.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Project Structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/
+├── app/
+│   ├── page.tsx          # Homepage
+│   ├── projects/         # Projects page
+│   ├── blog/             # Blog pages
+│   ├── about/            # About page
+│   ├── globals.css       # Global styles & animations
+│   └── layout.tsx        # Root layout
+├── components/
+│   ├── effects/          # Fireflies, particles
+│   ├── layout/           # Header, footer, mobile nav
+│   └── ui/               # Reusable UI components
+└── lib/
+    ├── projects.ts       # Project data
+    └── posts.ts          # Blog post data
+```
+
+---
+
+## Customization
+
+### Update Projects
+Edit `src/lib/projects.ts`:
+
+```typescript
+export const projects: Project[] = [
+  {
+    slug: "your-project",
+    title: "Your Project Name",
+    description: "What it does...",
+    tags: ["React", "TypeScript"],
+    featured: true,
+    github: "https://github.com/you/project",
+  },
+];
+```
+
+### Update Personal Info
+- **About page**: `src/app/about/page.tsx`
+- **Footer**: `src/components/layout/footer.tsx`
+- **Social links**: Update GitHub, LinkedIn, email
+
+### Adjust Colors
+Edit CSS variables in `src/app/globals.css`:
+
+```css
+--color-purple: #7c3aed;
+--color-pink: #ec4899;
+--color-cyan: #06b6d4;
+```
+
+---
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run start` | Run production build |
+| `npm run lint` | Run ESLint |
+
+---
+
+## Deployment
+
+### Vercel (Recommended)
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Sonali-Sharma-tech/portfolio)
+
+### Other Platforms
+Works with any platform supporting Node.js:
+- Netlify
+- Railway
+- Render
+- Self-hosted
+
+---
+
+## Performance
+
+- **Lighthouse Score**: 95+ across all metrics
+- **Static Generation**: Pages pre-rendered at build time
+- **Optimized Fonts**: Local font files, no external requests
+- **Minimal JavaScript**: CSS-driven animations
+
+---
+
+## License
+
+MIT License — feel free to use this as a template for your own portfolio.
+
+---
+
+<div align="center">
+
+**Built with Next.js & deployed on Vercel**
+
+Made with 💜 by [Sonali Sharma](https://github.com/Sonali-Sharma-tech)
+
+</div>
