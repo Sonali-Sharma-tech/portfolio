@@ -2,106 +2,103 @@ export interface Project {
   slug: string;
   title: string;
   description: string;
-  longDescription: string;
   tags: string[];
   featured: boolean;
-  github?: string;
+  github: string;
   live?: string;
-  image?: string;
 }
 
-// Replace with your actual projects
+// Real projects from GitHub
 export const projects: Project[] = [
   {
-    slug: "project-one",
-    title: "Project One",
+    slug: "colorful-carbon-extension",
+    title: "Colorful Carbon Extension",
     description:
-      "A full-stack web application that solves a real problem. Built with modern technologies and best practices.",
-    longDescription: `
-## Overview
-
-This project was built to solve [specific problem]. It allows users to [key functionality].
-
-## Key Features
-
-- Feature one with detailed explanation
-- Feature two with detailed explanation
-- Feature three with detailed explanation
-
-## Technical Decisions
-
-I chose Next.js for this project because...
-
-The database schema was designed to...
-
-## Challenges & Learnings
-
-The biggest challenge was...
-
-I learned a lot about...
-    `.trim(),
-    tags: ["Next.js", "TypeScript", "PostgreSQL", "Tailwind CSS"],
+      "VS Code extension that transforms your editor and terminal with beautiful colors and syntax highlighting.",
+    tags: ["TypeScript", "VS Code", "Developer Tools", "Themes"],
     featured: true,
-    github: "https://github.com/sonalisharma/project-one",
-    live: "https://project-one.vercel.app",
+    github: "https://github.com/Sonali-Sharma-tech/colorful-carbon-extension",
   },
   {
-    slug: "project-two",
-    title: "Project Two",
+    slug: "react-chat-application",
+    title: "React Chat Application",
     description:
-      "An open-source library that helps developers build better applications faster.",
-    longDescription: `
-## Overview
-
-An npm package that simplifies [specific task] for developers.
-
-## Installation
-
-\`\`\`bash
-npm install project-two
-\`\`\`
-
-## Usage
-
-\`\`\`typescript
-import { something } from 'project-two';
-
-const result = something();
-\`\`\`
-
-## Why I Built This
-
-I noticed many developers struggling with...
-    `.trim(),
-    tags: ["React", "npm", "Open Source"],
+      "Real-time chat application built with React.js, Node.js, and Socket.io for instant messaging.",
+    tags: ["React", "Node.js", "Socket.io", "Real-time"],
     featured: true,
-    github: "https://github.com/sonalisharma/project-two",
+    github: "https://github.com/Sonali-Sharma-tech/react-chat-application",
   },
   {
-    slug: "project-three",
-    title: "Project Three",
+    slug: "react-quiz-app",
+    title: "React Quiz App",
     description:
-      "A CLI tool that automates repetitive tasks and improves developer experience.",
-    longDescription: `
-## Overview
-
-A command-line tool that automates [specific workflow].
-
-## Installation
-
-\`\`\`bash
-npm install -g project-three
-\`\`\`
-
-## Commands
-
-- \`project-three init\` - Initialize a new project
-- \`project-three build\` - Build the project
-- \`project-three deploy\` - Deploy to production
-    `.trim(),
-    tags: ["Node.js", "CLI", "Automation"],
+      "Interactive quiz app for testing knowledge with engaging questions and real-time feedback.",
+    tags: ["React", "JavaScript", "Interactive", "Education"],
+    featured: true,
+    github: "https://github.com/Sonali-Sharma-tech/react-quiz-app",
+  },
+  {
+    slug: "mern-social-media-app",
+    title: "MERN Social Media App",
+    description:
+      "Full-stack social media platform built with MongoDB, Express, React, and Node.js.",
+    tags: ["MongoDB", "Express", "React", "Node.js"],
     featured: false,
-    github: "https://github.com/sonalisharma/project-three",
+    github: "https://github.com/Sonali-Sharma-tech/MERN-social-media-app",
+  },
+  {
+    slug: "frontend-interview-questions",
+    title: "Frontend Interview Questions",
+    description:
+      "Comprehensive collection of interview questions on JavaScript and React for frontend developers.",
+    tags: ["JavaScript", "React", "Interview Prep", "Learning"],
+    featured: false,
+    github: "https://github.com/Sonali-Sharma-tech/frontend-interview-questions",
+  },
+  {
+    slug: "react-typeahead",
+    title: "React Typeahead",
+    description:
+      "Custom typeahead/autocomplete functionality implemented without using any third-party library.",
+    tags: ["React", "JavaScript", "UI Components", "No Dependencies"],
+    featured: false,
+    github: "https://github.com/Sonali-Sharma-tech/react-typeahead",
+  },
+  {
+    slug: "nested-list-rendering-app",
+    title: "Nested List Rendering",
+    description:
+      "Rendering List UI with nested children like an Accordion component.",
+    tags: ["React", "JavaScript", "UI Patterns", "Components"],
+    featured: false,
+    github: "https://github.com/Sonali-Sharma-tech/nested-list-rendering-app",
+  },
+  {
+    slug: "pomodoro",
+    title: "Pomodoro Timer",
+    description:
+      "Productivity timer application using the Pomodoro technique for focused work sessions.",
+    tags: ["TypeScript", "Productivity", "Timer", "App"],
+    featured: false,
+    github: "https://github.com/Sonali-Sharma-tech/pomodoro",
+  },
+  {
+    slug: "weather-app-reactjs",
+    title: "Weather App",
+    description:
+      "React-based weather application to check current weather conditions.",
+    tags: ["React", "JavaScript", "API", "Weather"],
+    featured: false,
+    github: "https://github.com/Sonali-Sharma-tech/weather-app-reactjs",
+  },
+  {
+    slug: "grpc-web",
+    title: "gRPC Web",
+    description:
+      "Implementation of gRPC-Web for browser-based communication with gRPC services.",
+    tags: ["JavaScript", "gRPC", "Web", "Backend"],
+    featured: false,
+    github: "https://github.com/Sonali-Sharma-tech/grpc-web",
   },
 ];
 

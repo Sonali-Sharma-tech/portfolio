@@ -7,7 +7,6 @@ export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  // Prevent hydration mismatch
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -26,22 +25,25 @@ export function ThemeToggle() {
   return (
     <button
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:border-gold transition-colors"
+      className="group relative w-10 h-10 rounded-full border border-border flex items-center justify-center hover:border-purple hover:bg-purple/10 transition-all duration-300"
       aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
     >
+      {/* Glow effect */}
+      <div className="absolute inset-0 rounded-full bg-purple opacity-0 blur-lg group-hover:opacity-20 transition-opacity duration-500" />
+
       {theme === "dark" ? (
-        // Sun icon for light mode
+        // Sun icon
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
+          width="18"
+          height="18"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          strokeWidth="2"
+          strokeWidth="1.5"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="text-gold"
+          className="relative text-text-muted group-hover:text-orange transition-colors duration-300"
         >
           <circle cx="12" cy="12" r="4" />
           <path d="M12 2v2" />
@@ -54,18 +56,18 @@ export function ThemeToggle() {
           <path d="m19.07 4.93-1.41 1.41" />
         </svg>
       ) : (
-        // Moon icon for dark mode
+        // Moon icon
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
+          width="18"
+          height="18"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          strokeWidth="2"
+          strokeWidth="1.5"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="text-gold-dark"
+          className="relative text-text-muted group-hover:text-purple transition-colors duration-300"
         >
           <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
         </svg>

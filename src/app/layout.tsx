@@ -3,57 +3,43 @@ import { Cinzel, Crimson_Pro, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { Particles } from "@/components/effects/particles";
 import "./globals.css";
 
-// Heading font - elegant, medieval feel
+// Ancient display font for headings
 const cinzel = Cinzel({
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-cinzel",
   display: "swap",
 });
 
-// Body font - readable serif for long-form content
-const crimsonPro = Crimson_Pro({
+// Elegant body font
+const crimson = Crimson_Pro({
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  style: ["normal", "italic"],
   variable: "--font-crimson",
   display: "swap",
 });
 
-// Code font - for code blocks
+// Code font
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
+  weight: ["400", "500"],
   variable: "--font-jetbrains",
   display: "swap",
 });
 
 export const metadata: Metadata = {
   title: {
-    default: "Sonali Sharma | Developer",
-    template: "%s | Sonali Sharma",
+    default: "Sonali Sharma — Developer",
+    template: "%s — Sonali Sharma",
   },
   description:
-    "Full-stack developer crafting elegant digital experiences. Explore my projects, blog posts, and journey through code.",
-  keywords: ["developer", "portfolio", "full-stack", "web development", "React", "Next.js"],
+    "Developer crafting elegant digital experiences with precision and artistry.",
+  keywords: ["developer", "software engineer", "web development", "React", "TypeScript"],
   authors: [{ name: "Sonali Sharma" }],
-  creator: "Sonali Sharma",
-  openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: "https://sonalisharma.dev",
-    siteName: "Sonali Sharma",
-    title: "Sonali Sharma | Developer",
-    description: "Full-stack developer crafting elegant digital experiences.",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Sonali Sharma | Developer",
-    description: "Full-stack developer crafting elegant digital experiences.",
-    creator: "@sonalisharma",
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
 };
 
 export default function RootLayout({
@@ -62,19 +48,26 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${cinzel.variable} ${crimsonPro.variable} ${jetbrainsMono.variable} antialiased min-h-screen flex flex-col`}
-      >
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${cinzel.variable} ${crimson.variable} ${jetbrainsMono.variable}`}
+    >
+      <body className="min-h-screen antialiased">
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
-          enableSystem
+          defaultTheme="dark"
+          enableSystem={false}
           disableTransitionOnChange
         >
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          {/* Floating particles throughout */}
+          <Particles />
+
+          <div className="relative flex min-h-screen flex-col">
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
         </ThemeProvider>
       </body>
     </html>
