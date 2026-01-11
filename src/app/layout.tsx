@@ -4,6 +4,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Particles } from "@/components/effects/particles";
+import { CursorEffects } from "@/components/effects/cursor-effects";
+import { GameHUD } from "@/components/effects/game-ui";
 import "./globals.css";
 
 // Ancient display font for headings
@@ -60,6 +62,12 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
+          {/* Cinematic cursor with trails and click explosions */}
+          <CursorEffects />
+
+          {/* Gamified XP bar and achievement system */}
+          <GameHUD />
+
           {/* Floating particles throughout */}
           <Particles />
 
