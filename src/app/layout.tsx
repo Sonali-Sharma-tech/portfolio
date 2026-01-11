@@ -1,45 +1,44 @@
 import type { Metadata } from "next";
-import { Cinzel, Crimson_Pro, JetBrains_Mono } from "next/font/google";
+import { Orbitron, Exo_2, Fira_Code } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { Particles } from "@/components/effects/particles";
-import { CinematicEffects } from "@/components/effects/cinematic-effects";
+import { SpaceEffects } from "@/components/effects/space-effects";
+import { CyberEffects } from "@/components/effects/cyber-effects";
 import "./globals.css";
 
-// Ancient display font for headings
-const cinzel = Cinzel({
+// Futuristic display font for headings
+const orbitron = Orbitron({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-cinzel",
+  weight: ["400", "500", "600", "700", "800", "900"],
+  variable: "--font-orbitron",
   display: "swap",
 });
 
-// Elegant body font
-const crimson = Crimson_Pro({
+// Clean body font with futuristic feel
+const exo = Exo_2({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-exo",
+  display: "swap",
+});
+
+// Terminal/code font
+const firaCode = Fira_Code({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
-  style: ["normal", "italic"],
-  variable: "--font-crimson",
-  display: "swap",
-});
-
-// Code font
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-jetbrains",
+  variable: "--font-fira",
   display: "swap",
 });
 
 export const metadata: Metadata = {
   title: {
-    default: "Sonali Sharma — Developer",
-    template: "%s — Sonali Sharma",
+    default: "SONALI.SH — Space Terminal",
+    template: "%s — SONALI.SH",
   },
   description:
-    "Developer crafting elegant digital experiences with precision and artistry.",
-  keywords: ["developer", "software engineer", "web development", "React", "TypeScript"],
+    "Full-stack developer crafting seamless web experiences. Turning ideas into elegant, functional code.",
+  keywords: ["developer", "software engineer", "cyberpunk", "space", "React", "TypeScript"],
   authors: [{ name: "Sonali Sharma" }],
 };
 
@@ -52,20 +51,20 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${cinzel.variable} ${crimson.variable} ${jetbrainsMono.variable}`}
+      className={`${orbitron.variable} ${exo.variable} ${firaCode.variable}`}
     >
-      <body className="min-h-screen antialiased">
+      <body className="min-h-screen antialiased screen-flicker">
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
           enableSystem={false}
           disableTransitionOnChange
         >
-          {/* Cinematic effects - smooth intro, magnetic buttons, micro-interactions */}
-          <CinematicEffects />
+          {/* Space background effects - starfield, nebula */}
+          <SpaceEffects />
 
-          {/* Floating particles throughout */}
-          <Particles />
+          {/* Cyberpunk effects - glitch, cursor, scanlines */}
+          <CyberEffects />
 
           <div className="relative flex min-h-screen flex-col">
             <Header />

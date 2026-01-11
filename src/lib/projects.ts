@@ -8,11 +8,20 @@ export interface Project {
   live?: string;
 }
 
-// Real projects from GitHub
+// Featured projects
 export const projects: Project[] = [
   {
+    slug: "devtoolkit",
+    title: "DevToolkit",
+    description:
+      "A comprehensive developer toolkit with essential utilities and tools to boost productivity.",
+    tags: ["TypeScript", "Developer Tools", "Productivity", "Utilities"],
+    featured: true,
+    github: "https://github.com/Sonali-Sharma-tech/devtoolkit",
+  },
+  {
     slug: "colorful-carbon-extension",
-    title: "Colorful Carbon Extension",
+    title: "Colorful Extension",
     description:
       "VS Code extension that transforms your editor and terminal with beautiful colors and syntax highlighting.",
     tags: ["TypeScript", "VS Code", "Developer Tools", "Themes"],
@@ -20,85 +29,13 @@ export const projects: Project[] = [
     github: "https://github.com/Sonali-Sharma-tech/colorful-carbon-extension",
   },
   {
-    slug: "react-chat-application",
-    title: "React Chat Application",
+    slug: "black-note",
+    title: "Black Note",
     description:
-      "Real-time chat application built with React.js, Node.js, and Socket.io for instant messaging.",
-    tags: ["React", "Node.js", "Socket.io", "Real-time"],
+      "A sleek and minimal note-taking application with a beautiful dark interface.",
+    tags: ["React", "Notes", "Productivity", "Dark Mode"],
     featured: true,
-    github: "https://github.com/Sonali-Sharma-tech/react-chat-application",
-  },
-  {
-    slug: "react-quiz-app",
-    title: "React Quiz App",
-    description:
-      "Interactive quiz app for testing knowledge with engaging questions and real-time feedback.",
-    tags: ["React", "JavaScript", "Interactive", "Education"],
-    featured: true,
-    github: "https://github.com/Sonali-Sharma-tech/react-quiz-app",
-  },
-  {
-    slug: "mern-social-media-app",
-    title: "MERN Social Media App",
-    description:
-      "Full-stack social media platform built with MongoDB, Express, React, and Node.js.",
-    tags: ["MongoDB", "Express", "React", "Node.js"],
-    featured: false,
-    github: "https://github.com/Sonali-Sharma-tech/MERN-social-media-app",
-  },
-  {
-    slug: "frontend-interview-questions",
-    title: "Frontend Interview Questions",
-    description:
-      "Comprehensive collection of interview questions on JavaScript and React for frontend developers.",
-    tags: ["JavaScript", "React", "Interview Prep", "Learning"],
-    featured: false,
-    github: "https://github.com/Sonali-Sharma-tech/frontend-interview-questions",
-  },
-  {
-    slug: "react-typeahead",
-    title: "React Typeahead",
-    description:
-      "Custom typeahead/autocomplete functionality implemented without using any third-party library.",
-    tags: ["React", "JavaScript", "UI Components", "No Dependencies"],
-    featured: false,
-    github: "https://github.com/Sonali-Sharma-tech/react-typeahead",
-  },
-  {
-    slug: "nested-list-rendering-app",
-    title: "Nested List Rendering",
-    description:
-      "Rendering List UI with nested children like an Accordion component.",
-    tags: ["React", "JavaScript", "UI Patterns", "Components"],
-    featured: false,
-    github: "https://github.com/Sonali-Sharma-tech/nested-list-rendering-app",
-  },
-  {
-    slug: "pomodoro",
-    title: "Pomodoro Timer",
-    description:
-      "Productivity timer application using the Pomodoro technique for focused work sessions.",
-    tags: ["TypeScript", "Productivity", "Timer", "App"],
-    featured: false,
-    github: "https://github.com/Sonali-Sharma-tech/pomodoro",
-  },
-  {
-    slug: "weather-app-reactjs",
-    title: "Weather App",
-    description:
-      "React-based weather application to check current weather conditions.",
-    tags: ["React", "JavaScript", "API", "Weather"],
-    featured: false,
-    github: "https://github.com/Sonali-Sharma-tech/weather-app-reactjs",
-  },
-  {
-    slug: "grpc-web",
-    title: "gRPC Web",
-    description:
-      "Implementation of gRPC-Web for browser-based communication with gRPC services.",
-    tags: ["JavaScript", "gRPC", "Web", "Backend"],
-    featured: false,
-    github: "https://github.com/Sonali-Sharma-tech/grpc-web",
+    github: "https://github.com/Sonali-Sharma-tech/black-note",
   },
 ];
 
