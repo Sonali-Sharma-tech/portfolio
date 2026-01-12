@@ -320,6 +320,42 @@ const filterCategories = [
 export default function ProjectsPage() {
   const allProjects = getAllProjects();
   const [activeFilter, setActiveFilter] = useState("all");
+  const [terminalInput, setTerminalInput] = useState("");
+  const [showCursor, setShowCursor] = useState(true);
+
+  // Blinking cursor effect
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShowCursor(prev => !prev);
+    }, 530);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Handle terminal input
+  const handleTerminalKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      const cmd = terminalInput.toLowerCase().trim();
+      if (cmd === 'clear' || cmd === 'reset' || cmd === 'all') {
+        setActiveFilter('all');
+      } else {
+        // Try to match a filter
+        const matchedFilter = filterCategories.find(f =>
+          f.id.toLowerCase() === cmd ||
+          f.label.toLowerCase() === cmd ||
+          f.label.toLowerCase().includes(cmd)
+        );
+        if (matchedFilter) {
+          setActiveFilter(matchedFilter.id);
+        }
+      }
+      setTerminalInput('');
+    }
+  };
+
+  // Update terminal when filter changes via button click
+  // const handleFilterClick = (filterId: string) => {
+  //   setActiveFilter(filterId);
+  // };
 
   // Filter projects based on selected category
   const projects = activeFilter === "all"
@@ -533,20 +569,8 @@ export default function ProjectsPage() {
         </div>
 
         <div className="container relative z-10">
-          {/* Cyber breadcrumb / location indicator */}
-          <div className="mb-6">
-            <div className="inline-flex items-center gap-2 text-sm font-mono">
-              <span className="text-text-muted">~</span>
-              <span className="text-cyan">/</span>
-              <span className="text-text-muted">sonali</span>
-              <span className="text-cyan">/</span>
-              <span className="text-white font-semibold">projects</span>
-              <span className="inline-block w-2 h-4 bg-cyan animate-pulse ml-1" />
-            </div>
-          </div>
-
           {/* Main title */}
-          <div className="relative mb-10">
+          <div className="relative mb-8">
             <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-bold tracking-tight">
               <span className="text-cyan">{"{"}</span>
               <span className="text-white"> BUILD</span>
@@ -558,22 +582,54 @@ export default function ProjectsPage() {
             </h2>
           </div>
 
-          {/* Quick filters - Creative chip design */}
+          {/* Interactive terminal filter */}
+          <div className="mb-8">
+            <div className="inline-flex items-center gap-1 text-sm font-mono bg-space-surface/80 border border-border px-4 py-3 rounded">
+              <span className="text-green">$</span>
+              <span className="text-text-muted ml-2">filter</span>
+              <span className="text-cyan ml-1">~/projects</span>
+              {activeFilter !== 'all' && (
+                <>
+                  <span className="text-white ml-1">--tag</span>
+                  <span className="text-magenta ml-1">{activeFilter}</span>
+                </>
+              )}
+              <span className="text-text-muted mx-2">|</span>
+              <input
+                type="text"
+                value={terminalInput}
+                onChange={(e) => setTerminalInput(e.target.value)}
+                onKeyDown={handleTerminalKeyDown}
+                placeholder={activeFilter !== 'all' ? '"clear" to reset' : 'react, typescript, tools...'}
+                className="bg-transparent border-none outline-none text-white placeholder:text-text-muted/50 w-44 font-mono text-sm"
+              />
+              <span className={`w-2 h-5 bg-cyan ${showCursor ? 'opacity-100' : 'opacity-0'} transition-opacity`} />
+            </div>
+            {activeFilter !== 'all' ? (
+              <div className="mt-3 text-xs font-mono text-text-muted">
+                <span className="text-green">✓</span> Filtering by <span className="text-cyan">{activeFilter}</span> — type <span className="text-magenta">clear</span> + Enter to reset
+              </div>
+            ) : (
+              <div className="mt-3 text-xs font-mono text-text-muted">
+                <span className="text-cyan">→</span> Type a tag and press Enter to filter projects
+              </div>
+            )}
+          </div>
+
+          {/* Quick filters - Temporarily commented out
           <div className="relative">
-            {/* Filter label */}
             <div className="flex items-center gap-3 mb-4">
               <span className="text-xs font-mono text-text-muted uppercase tracking-widest">Filter by</span>
               <div className="flex-1 h-px bg-gradient-to-r from-border to-transparent" />
             </div>
 
-            {/* Filter chips */}
             <div className="flex flex-wrap items-center gap-3">
               {filterCategories.map((filter) => {
                 const isActive = activeFilter === filter.id;
                 return (
                   <button
                     key={filter.id}
-                    onClick={() => setActiveFilter(filter.id)}
+                    onClick={() => handleFilterClick(filter.id)}
                     className={`group relative px-4 py-2.5 font-mono text-sm transition-all duration-300 cursor-pointer
                       ${isActive
                         ? 'bg-gradient-to-r from-cyan/20 to-magenta/20 text-white border border-cyan/50'
@@ -583,16 +639,11 @@ export default function ProjectsPage() {
                       clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)',
                     }}
                   >
-                    {/* Glow effect on active */}
                     {isActive && (
                       <div className="absolute inset-0 bg-cyan/10 blur-sm -z-10" />
                     )}
-
-                    {/* Corner accents */}
                     <div className={`absolute top-0 left-0 w-2 h-2 border-t border-l transition-colors ${isActive ? 'border-cyan' : 'border-transparent group-hover:border-cyan/50'}`} />
                     <div className={`absolute bottom-0 right-0 w-2 h-2 border-b border-r transition-colors ${isActive ? 'border-magenta' : 'border-transparent group-hover:border-magenta/50'}`} />
-
-                    {/* Content */}
                     <div className="flex items-center gap-2">
                       <span className={`text-base transition-transform group-hover:scale-110 ${isActive ? 'drop-shadow-[0_0_4px_currentColor]' : ''}`}>
                         {filter.icon}
@@ -607,13 +658,12 @@ export default function ProjectsPage() {
               })}
             </div>
 
-            {/* Active filter indicator */}
             {activeFilter !== 'all' && (
               <div className="mt-4 flex items-center gap-2 text-xs font-mono text-text-muted">
                 <span className="text-cyan">→</span>
                 <span>Showing {activeFilter} projects</span>
                 <button
-                  onClick={() => setActiveFilter('all')}
+                  onClick={() => handleFilterClick('all')}
                   className="text-magenta hover:text-white transition-colors ml-2"
                 >
                   [clear]
@@ -621,6 +671,7 @@ export default function ProjectsPage() {
               </div>
             )}
           </div>
+          */}
         </div>
       </section>
 
