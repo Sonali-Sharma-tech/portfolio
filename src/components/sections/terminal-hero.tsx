@@ -1,87 +1,144 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 
-// Typewriter effect hook
-function useTypewriter(text: string, speed: number = 50, delay: number = 0) {
-  const [displayText, setDisplayText] = useState("");
-  const [isComplete, setIsComplete] = useState(false);
-
-  useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
-    let currentIndex = 0;
-
-    const startTyping = () => {
-      const typeNextChar = () => {
-        if (currentIndex < text.length) {
-          setDisplayText(text.slice(0, currentIndex + 1));
-          currentIndex++;
-          timeoutId = setTimeout(typeNextChar, speed);
-        } else {
-          setIsComplete(true);
-        }
-      };
-      typeNextChar();
-    };
-
-    const delayTimeout = setTimeout(startTyping, delay);
-
-    return () => {
-      clearTimeout(delayTimeout);
-      clearTimeout(timeoutId);
-    };
-  }, [text, speed, delay]);
-
-  return { displayText, isComplete };
+// Terminal sequence - each step waits for the previous
+interface TerminalStep {
+  type: 'command' | 'output';
+  content: string | React.ReactNode;
+  typingSpeed?: number;
 }
 
-// Terminal line component
-function TerminalLine({
-  prompt,
-  command,
-  delay,
-  showCursor = false,
-}: {
-  prompt: string;
-  command: string;
-  delay: number;
-  showCursor?: boolean;
-}) {
-  const { displayText, isComplete } = useTypewriter(command, 30, delay);
-
-  return (
-    <div className="terminal-line">
-      <span className="terminal-prompt">{prompt}</span>
-      <span className="terminal-command">
-        {displayText}
-        {showCursor && !isComplete && <span className="terminal-cursor" />}
-      </span>
+const terminalSequence: TerminalStep[] = [
+  { type: 'command', content: 'whoami', typingSpeed: 80 },
+  { type: 'output', content: <><span className="text-cyan">Sonali Sharma</span> — Full-Stack Developer</> },
+  { type: 'command', content: 'cat mission.txt', typingSpeed: 60 },
+  { type: 'output', content: <>Building <span className="text-magenta">digital experiences</span> that feel like magic</> },
+  { type: 'command', content: 'ls skills/', typingSpeed: 70 },
+  { type: 'output', content: (
+    <div className="flex flex-wrap gap-x-3 gap-y-1">
+      <span className="text-green">React</span>
+      <span className="text-cyan">TypeScript</span>
+      <span className="text-magenta">Next.js</span>
+      <span className="text-green">Node.js</span>
+      <span className="text-cyan">GraphQL</span>
     </div>
-  );
-}
-
-// Output line that appears after typing
-function OutputLine({ children, delay }: { children: React.ReactNode; delay: number }) {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setIsVisible(true), delay);
-    return () => clearTimeout(timer);
-  }, [delay]);
-
-  if (!isVisible) return null;
-
-  return <div className="terminal-output">{children}</div>;
-}
+  )},
+  { type: 'command', content: './start_adventure.sh', typingSpeed: 50 },
+];
 
 export function TerminalHero() {
-  const [showContent, setShowContent] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [typedText, setTypedText] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [cursorVisible, setCursorVisible] = useState(true);
 
+  // Blinking cursor
   useEffect(() => {
-    const timer = setTimeout(() => setShowContent(true), 2500);
-    return () => clearTimeout(timer);
+    const interval = setInterval(() => {
+      setCursorVisible(prev => !prev);
+    }, 530);
+    return () => clearInterval(interval);
   }, []);
+
+  // Type out command character by character
+  const typeCommand = useCallback((text: string, speed: number) => {
+    setIsTyping(true);
+    setTypedText("");
+    let index = 0;
+
+    const typeNext = () => {
+      if (index < text.length) {
+        setTypedText(text.slice(0, index + 1));
+        index++;
+        setTimeout(typeNext, speed + Math.random() * 30);
+      } else {
+        setIsTyping(false);
+        // After command is typed, wait a bit then move to next step
+        setTimeout(() => {
+          setCurrentStep(prev => prev + 1);
+        }, 400);
+      }
+    };
+
+    setTimeout(typeNext, 300);
+  }, []);
+
+  // Process each step
+  useEffect(() => {
+    if (currentStep >= terminalSequence.length) {
+      // All done, show success message
+      setTimeout(() => setShowSuccess(true), 500);
+      return;
+    }
+
+    const step = terminalSequence[currentStep];
+
+    if (step.type === 'command') {
+      typeCommand(step.content as string, step.typingSpeed || 60);
+    } else if (step.type === 'output') {
+      // Output appears instantly, then wait before next command
+      setTimeout(() => {
+        setCurrentStep(prev => prev + 1);
+        setTypedText("");
+      }, 800);
+    }
+  }, [currentStep, typeCommand]);
+
+  // Render completed steps
+  const renderCompletedSteps = () => {
+    const completed: React.ReactNode[] = [];
+
+    for (let i = 0; i < currentStep; i++) {
+      const step = terminalSequence[i];
+      if (step.type === 'command') {
+        completed.push(
+          <div key={`cmd-${i}`} className="terminal-line">
+            <span className="terminal-prompt">$</span>
+            <span className="terminal-command">{step.content}</span>
+          </div>
+        );
+      } else {
+        completed.push(
+          <div key={`out-${i}`} className="terminal-output animate-fadeIn">
+            {step.content}
+          </div>
+        );
+      }
+    }
+
+    return completed;
+  };
+
+  // Render current step being typed
+  const renderCurrentStep = () => {
+    if (currentStep >= terminalSequence.length) return null;
+
+    const step = terminalSequence[currentStep];
+
+    if (step.type === 'command') {
+      return (
+        <div className="terminal-line">
+          <span className="terminal-prompt">$</span>
+          <span className="terminal-command">
+            {typedText}
+            <span
+              className={`inline-block w-2.5 h-5 bg-cyan ml-0.5 align-middle ${cursorVisible ? 'opacity-100' : 'opacity-0'}`}
+              style={{ transition: 'opacity 0.1s' }}
+            />
+          </span>
+        </div>
+      );
+    } else {
+      return (
+        <div className="terminal-output animate-fadeIn">
+          {step.content}
+        </div>
+      );
+    }
+  };
 
   return (
     <section className="hero">
@@ -89,7 +146,7 @@ export function TerminalHero() {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Terminal */}
           <div className="order-2 lg:order-1">
-            <div className="terminal-card max-w-2xl h-[480px] flex flex-col">
+            <div className="terminal-card max-w-2xl h-[440px] flex flex-col">
               <div className="terminal-header flex-shrink-0">
                 <div className="terminal-dot terminal-dot-red" />
                 <div className="terminal-dot terminal-dot-yellow" />
@@ -97,52 +154,17 @@ export function TerminalHero() {
                 <span className="terminal-title">sonali@dev ~ /portfolio</span>
               </div>
               <div className="terminal-body flex-1 overflow-hidden">
-                <TerminalLine
-                  prompt="$"
-                  command="whoami"
-                  delay={500}
-                />
-                <OutputLine delay={1000}>
-                  <span className="text-cyan">Sonali Sharma</span> — Full-Stack Developer
-                </OutputLine>
+                {renderCompletedSteps()}
+                {renderCurrentStep()}
 
-                <TerminalLine
-                  prompt="$"
-                  command="cat mission.txt"
-                  delay={1500}
-                />
-                <OutputLine delay={2200}>
-                  Building{" "}
-                  <span className="text-magenta">digital experiences</span>{" "}
-                  that feel like magic ✨
-                </OutputLine>
-
-                <TerminalLine
-                  prompt="$"
-                  command="ls skills/"
-                  delay={2800}
-                />
-                <OutputLine delay={3500}>
-                  <span className="text-green">React</span>{" "}
-                  <span className="text-cyan">TypeScript</span>{" "}
-                  <span className="text-magenta">Next.js</span>{" "}
-                  <span className="text-green">Node.js</span>{" "}
-                  <span className="text-cyan">GraphQL</span>
-                </OutputLine>
-
-                <TerminalLine
-                  prompt="$"
-                  command="./start_adventure.sh"
-                  delay={4000}
-                  showCursor
-                />
-
-                {showContent && (
-                  <div className="mt-6 pt-6 border-t border-cyan/20">
-                    <div className="text-green text-sm mb-2">
-                      [SUCCESS] Connection established!
+                {showSuccess && (
+                  <div className="mt-6 pt-6 border-t border-cyan/20 animate-fadeIn">
+                    <div className="flex items-center gap-2 text-sm mb-4">
+                      <span className="w-2 h-2 bg-green rounded-full animate-pulse" />
+                      <span className="text-green">[SUCCESS]</span>
+                      <span className="text-text-muted">Connection established!</span>
                     </div>
-                    <div className="flex flex-wrap gap-3 mt-4">
+                    <div className="flex flex-wrap gap-3">
                       <Link href="/projects" className="btn-cyber text-xs py-2 px-4">
                         EXPLORE_PROJECTS
                       </Link>
@@ -201,14 +223,18 @@ export function TerminalHero() {
             </div>
           </div>
         </div>
-
-        {/* Animated scroll indicator - no text, just visual cue */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center">
-          <div className="w-6 h-10 border-2 border-cyan/30 rounded-full flex justify-center pt-2">
-            <div className="w-1 h-2 bg-cyan rounded-full animate-bounce" />
-          </div>
-        </div>
       </div>
+
+      {/* Fade-in animation styles */}
+      <style jsx>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(4px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.3s ease-out forwards;
+        }
+      `}</style>
     </section>
   );
 }
