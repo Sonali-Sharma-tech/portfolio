@@ -333,32 +333,96 @@ export default function ProjectsPage() {
   return (
     <>
       {/* ========================================
-          SPACE HERO - Galaxy Elements
+          SPACE HERO - Wild Galaxy Elements
           ======================================== */}
       <section className="hero-compact relative overflow-hidden">
-        {/* Floating orbs / planets */}
+        {/* === COSMIC BACKGROUND LAYER === */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {/* Large cyan orb */}
+
+          {/* Deep space nebula gradients */}
           <div
-            className="absolute w-64 h-64 rounded-full opacity-10 blur-3xl"
+            className="absolute w-[600px] h-[600px] rounded-full opacity-20 blur-[100px]"
             style={{
-              background: 'radial-gradient(circle, rgba(0,255,245,0.8) 0%, transparent 70%)',
-              top: '10%',
-              right: '-5%',
-              animation: 'float 8s ease-in-out infinite',
+              background: 'radial-gradient(ellipse, rgba(0,255,245,0.6) 0%, rgba(0,255,245,0.1) 40%, transparent 70%)',
+              top: '-20%',
+              right: '-15%',
+              animation: 'nebulaPulse 12s ease-in-out infinite',
             }}
           />
-          {/* Medium magenta orb */}
           <div
-            className="absolute w-48 h-48 rounded-full opacity-10 blur-3xl"
+            className="absolute w-[500px] h-[500px] rounded-full opacity-15 blur-[80px]"
             style={{
-              background: 'radial-gradient(circle, rgba(255,0,255,0.8) 0%, transparent 70%)',
-              bottom: '20%',
-              left: '-10%',
-              animation: 'float 10s ease-in-out infinite reverse',
+              background: 'radial-gradient(ellipse, rgba(255,0,255,0.6) 0%, rgba(139,92,246,0.2) 50%, transparent 70%)',
+              bottom: '-30%',
+              left: '-20%',
+              animation: 'nebulaPulse 15s ease-in-out infinite reverse',
             }}
           />
-          {/* Small stars - deterministic positions */}
+
+          {/* Distant galaxy spiral (subtle) */}
+          <div
+            className="absolute w-32 h-32 opacity-10"
+            style={{
+              top: '15%',
+              left: '10%',
+              background: 'conic-gradient(from 0deg, transparent, rgba(0,255,245,0.3), transparent, rgba(255,0,255,0.2), transparent)',
+              borderRadius: '50%',
+              animation: 'spin 60s linear infinite',
+            }}
+          />
+
+
+          {/* === CONSTELLATION PATTERN === */}
+          <svg className="absolute inset-0 w-full h-full opacity-20" style={{ animation: 'constellationFade 8s ease-in-out infinite' }}>
+            {/* Constellation 1 - Triangle */}
+            <line x1="15%" y1="25%" x2="25%" y2="15%" stroke="rgba(0,255,245,0.4)" strokeWidth="0.5" />
+            <line x1="25%" y1="15%" x2="30%" y2="30%" stroke="rgba(0,255,245,0.4)" strokeWidth="0.5" />
+            <line x1="30%" y1="30%" x2="15%" y2="25%" stroke="rgba(0,255,245,0.4)" strokeWidth="0.5" />
+            {/* Constellation 2 - Arrow */}
+            <line x1="70%" y1="20%" x2="80%" y2="25%" stroke="rgba(255,0,255,0.4)" strokeWidth="0.5" />
+            <line x1="80%" y1="25%" x2="85%" y2="15%" stroke="rgba(255,0,255,0.4)" strokeWidth="0.5" />
+            <line x1="80%" y1="25%" x2="90%" y2="30%" stroke="rgba(255,0,255,0.4)" strokeWidth="0.5" />
+          </svg>
+
+          {/* === TWINKLING STARS (multi-layer) === */}
+          {/* Large bright stars */}
+          {[
+            { left: 8, top: 12, size: 3, color: 'cyan' },
+            { left: 85, top: 18, size: 2.5, color: 'white' },
+            { left: 45, top: 8, size: 2, color: 'magenta' },
+            { left: 72, top: 75, size: 2.5, color: 'cyan' },
+          ].map((star, i) => (
+            <div
+              key={`bright-${i}`}
+              className="absolute"
+              style={{
+                left: `${star.left}%`,
+                top: `${star.top}%`,
+                width: `${star.size * 4}px`,
+                height: `${star.size * 4}px`,
+              }}
+            >
+              {/* Star core */}
+              <div
+                className="absolute inset-0 rounded-full"
+                style={{
+                  background: star.color === 'cyan' ? '#00fff5' : star.color === 'magenta' ? '#ff00ff' : '#ffffff',
+                  boxShadow: `0 0 ${star.size * 3}px ${star.color === 'cyan' ? 'rgba(0,255,245,0.8)' : star.color === 'magenta' ? 'rgba(255,0,255,0.8)' : 'rgba(255,255,255,0.8)'}`,
+                  animation: `starPulse ${2 + i * 0.5}s ease-in-out infinite`,
+                }}
+              />
+              {/* Star rays */}
+              <div
+                className="absolute inset-[-50%]"
+                style={{
+                  background: `conic-gradient(from 45deg, transparent, ${star.color === 'cyan' ? 'rgba(0,255,245,0.3)' : star.color === 'magenta' ? 'rgba(255,0,255,0.3)' : 'rgba(255,255,255,0.3)'} 5%, transparent 10%)`,
+                  animation: `spin ${20 + i * 5}s linear infinite`,
+                }}
+              />
+            </div>
+          ))}
+
+          {/* Small distant stars */}
           {[
             { left: 10, top: 15, opacity: 0.5, duration: 2.5, delay: 0.2 },
             { left: 25, top: 8, opacity: 0.7, duration: 3.2, delay: 0.8 },
@@ -372,9 +436,13 @@ export default function ProjectsPage() {
             { left: 75, top: 72, opacity: 0.5, duration: 2.9, delay: 1.6 },
             { left: 90, top: 55, opacity: 0.6, duration: 3.1, delay: 0.4 },
             { left: 5, top: 40, opacity: 0.8, duration: 2.6, delay: 1.3 },
+            { left: 62, top: 35, opacity: 0.5, duration: 2.9, delay: 0.9 },
+            { left: 18, top: 88, opacity: 0.6, duration: 3.4, delay: 1.1 },
+            { left: 95, top: 42, opacity: 0.4, duration: 2.3, delay: 1.7 },
+            { left: 38, top: 62, opacity: 0.7, duration: 3.0, delay: 0.6 },
           ].map((star, i) => (
             <div
-              key={i}
+              key={`small-${i}`}
               className="absolute w-1 h-1 bg-white rounded-full"
               style={{
                 left: `${star.left}%`,
@@ -385,60 +453,173 @@ export default function ProjectsPage() {
               }}
             />
           ))}
+
+          {/* === FLOATING COSMIC DUST PARTICLES === */}
+          {[
+            { left: 20, top: 30, size: 2, duration: 25, delay: 0 },
+            { left: 60, top: 50, size: 1.5, duration: 30, delay: 5 },
+            { left: 80, top: 20, size: 1, duration: 20, delay: 10 },
+            { left: 35, top: 70, size: 2, duration: 28, delay: 3 },
+            { left: 90, top: 60, size: 1.5, duration: 22, delay: 8 },
+          ].map((particle, i) => (
+            <div
+              key={`dust-${i}`}
+              className="absolute rounded-full bg-gradient-to-r from-cyan/30 to-magenta/30"
+              style={{
+                left: `${particle.left}%`,
+                top: `${particle.top}%`,
+                width: `${particle.size}px`,
+                height: `${particle.size}px`,
+                animation: `floatDust ${particle.duration}s ease-in-out infinite`,
+                animationDelay: `${particle.delay}s`,
+              }}
+            />
+          ))}
+
+          {/* === ORBIT RINGS (subtle planetary system hint) === */}
+          <div
+            className="absolute w-96 h-96 border border-cyan/5 rounded-full"
+            style={{
+              top: '50%',
+              right: '-10%',
+              transform: 'translateY(-50%) rotateX(75deg)',
+              animation: 'orbitRotate 40s linear infinite',
+            }}
+          >
+            {/* Orbiting object */}
+            <div
+              className="absolute w-2 h-2 bg-cyan rounded-full shadow-[0_0_10px_rgba(0,255,245,0.8)]"
+              style={{
+                top: '0%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+              }}
+            />
+          </div>
+
+          {/* === KEYFRAME ANIMATIONS === */}
           <style>{`
-            @keyframes float {
-              0%, 100% { transform: translateY(0) scale(1); }
-              50% { transform: translateY(-20px) scale(1.05); }
+            @keyframes nebulaPulse {
+              0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.15; }
+              50% { transform: scale(1.1) rotate(5deg); opacity: 0.25; }
             }
             @keyframes twinkle {
               0%, 100% { opacity: 0.3; transform: scale(1); }
               50% { opacity: 1; transform: scale(1.5); }
             }
+            @keyframes starPulse {
+              0%, 100% { transform: scale(1); opacity: 0.8; }
+              50% { transform: scale(1.3); opacity: 1; }
+            }
+            @keyframes spin {
+              from { transform: rotate(0deg); }
+              to { transform: rotate(360deg); }
+            }
+            @keyframes constellationFade {
+              0%, 100% { opacity: 0.15; }
+              50% { opacity: 0.35; }
+            }
+            @keyframes floatDust {
+              0%, 100% { transform: translate(0, 0) rotate(0deg); }
+              25% { transform: translate(10px, -15px) rotate(90deg); }
+              50% { transform: translate(5px, 10px) rotate(180deg); }
+              75% { transform: translate(-10px, -5px) rotate(270deg); }
+            }
+            @keyframes orbitRotate {
+              from { transform: translateY(-50%) rotateX(75deg) rotateZ(0deg); }
+              to { transform: translateY(-50%) rotateX(75deg) rotateZ(360deg); }
+            }
           `}</style>
         </div>
 
         <div className="container relative z-10">
-          {/* Main title - Large & Bold */}
-          <div className="relative mb-8">
-            <h1 className="text-6xl md:text-8xl lg:text-9xl font-display font-bold tracking-tight">
-              <span className="bg-gradient-to-r from-white via-cyan to-magenta bg-clip-text text-transparent">
-                PROJECTS
-              </span>
-            </h1>
-            {/* Orbiting dot */}
-            <div className="absolute -right-4 top-1/2 -translate-y-1/2">
-              <div
-                className="w-3 h-3 bg-cyan rounded-full shadow-[0_0_15px_rgba(0,255,245,0.8)]"
-                style={{ animation: 'pulse 2s ease-in-out infinite' }}
-              />
+          {/* Cyber breadcrumb / location indicator */}
+          <div className="mb-6">
+            <div className="inline-flex items-center gap-2 text-sm font-mono">
+              <span className="text-text-muted">~</span>
+              <span className="text-cyan">/</span>
+              <span className="text-text-muted">sonali</span>
+              <span className="text-cyan">/</span>
+              <span className="text-white font-semibold">projects</span>
+              <span className="inline-block w-2 h-4 bg-cyan animate-pulse ml-1" />
             </div>
           </div>
 
-          {/* Tagline - More creative */}
-          <p className="text-lg md:text-xl text-text-secondary max-w-md mb-8 font-mono">
-            <span className="text-cyan">{">"}</span> Exploring the digital cosmos through code
-          </p>
+          {/* Main title */}
+          <div className="relative mb-10">
+            <h2 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-bold tracking-tight">
+              <span className="text-cyan">{"{"}</span>
+              <span className="text-white"> BUILD</span>
+              <span className="text-magenta">.</span>
+              <span className="text-white">SHIP</span>
+              <span className="text-magenta">.</span>
+              <span className="text-white">REPEAT </span>
+              <span className="text-cyan">{"}"}</span>
+            </h2>
+          </div>
 
-          {/* Quick filters / tags */}
-          <div className="flex flex-wrap items-center gap-2">
-            {filterCategories.map((filter) => {
-              const isActive = activeFilter === filter.id;
-              const colorStyles: Record<string, string> = {
-                cyan: isActive ? "bg-cyan/20 border-cyan text-cyan" : "border-cyan/30 text-cyan/70 hover:border-cyan hover:text-cyan",
-                magenta: isActive ? "bg-magenta/20 border-magenta text-magenta" : "border-magenta/30 text-magenta/70 hover:border-magenta hover:text-magenta",
-                green: isActive ? "bg-green/20 border-green text-green" : "border-green/30 text-green/70 hover:border-green hover:text-green",
-              };
-              return (
+          {/* Quick filters - Creative chip design */}
+          <div className="relative">
+            {/* Filter label */}
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-xs font-mono text-text-muted uppercase tracking-widest">Filter by</span>
+              <div className="flex-1 h-px bg-gradient-to-r from-border to-transparent" />
+            </div>
+
+            {/* Filter chips */}
+            <div className="flex flex-wrap items-center gap-3">
+              {filterCategories.map((filter) => {
+                const isActive = activeFilter === filter.id;
+                return (
+                  <button
+                    key={filter.id}
+                    onClick={() => setActiveFilter(filter.id)}
+                    className={`group relative px-4 py-2.5 font-mono text-sm transition-all duration-300 cursor-pointer
+                      ${isActive
+                        ? 'bg-gradient-to-r from-cyan/20 to-magenta/20 text-white border border-cyan/50'
+                        : 'bg-space-surface/50 text-text-secondary border border-border hover:border-cyan/30 hover:text-white'
+                      }`}
+                    style={{
+                      clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)',
+                    }}
+                  >
+                    {/* Glow effect on active */}
+                    {isActive && (
+                      <div className="absolute inset-0 bg-cyan/10 blur-sm -z-10" />
+                    )}
+
+                    {/* Corner accents */}
+                    <div className={`absolute top-0 left-0 w-2 h-2 border-t border-l transition-colors ${isActive ? 'border-cyan' : 'border-transparent group-hover:border-cyan/50'}`} />
+                    <div className={`absolute bottom-0 right-0 w-2 h-2 border-b border-r transition-colors ${isActive ? 'border-magenta' : 'border-transparent group-hover:border-magenta/50'}`} />
+
+                    {/* Content */}
+                    <div className="flex items-center gap-2">
+                      <span className={`text-base transition-transform group-hover:scale-110 ${isActive ? 'drop-shadow-[0_0_4px_currentColor]' : ''}`}>
+                        {filter.icon}
+                      </span>
+                      <span className="font-medium">{filter.label}</span>
+                      {isActive && (
+                        <span className="w-1.5 h-1.5 bg-cyan rounded-full animate-pulse ml-1" />
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Active filter indicator */}
+            {activeFilter !== 'all' && (
+              <div className="mt-4 flex items-center gap-2 text-xs font-mono text-text-muted">
+                <span className="text-cyan">→</span>
+                <span>Showing {activeFilter} projects</span>
                 <button
-                  key={filter.id}
-                  onClick={() => setActiveFilter(filter.id)}
-                  className={`px-3 py-1.5 border text-xs font-mono transition-all cursor-pointer flex items-center gap-2 ${colorStyles[filter.color]}`}
+                  onClick={() => setActiveFilter('all')}
+                  className="text-magenta hover:text-white transition-colors ml-2"
                 >
-                  <span>{filter.icon}</span>
-                  <span>{filter.label}</span>
+                  [clear]
                 </button>
-              );
-            })}
+              </div>
+            )}
           </div>
         </div>
       </section>
