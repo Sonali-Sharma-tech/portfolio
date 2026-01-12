@@ -5,6 +5,8 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { SpaceEffects } from "@/components/effects/space-effects";
 import { CyberEffects } from "@/components/effects/cyber-effects";
+import { HyperspaceProvider } from "@/context/hyperspace-context";
+import { HyperspaceJourneyWrapper } from "@/components/effects/hyperspace-wrapper";
 import "./globals.css";
 
 // Futuristic display font for headings
@@ -60,17 +62,22 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          {/* Space background effects - starfield, nebula */}
-          <SpaceEffects />
+          <HyperspaceProvider>
+            {/* Space background effects - starfield, nebula */}
+            <SpaceEffects />
 
-          {/* Cyberpunk effects - glitch, cursor, scanlines */}
-          <CyberEffects />
+            {/* Cyberpunk effects - glitch, cursor, scanlines */}
+            <CyberEffects />
 
-          <div className="relative flex min-h-screen flex-col">
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
+            {/* Hyperspace journey overlay */}
+            <HyperspaceJourneyWrapper />
+
+            <div className="relative flex min-h-screen flex-col">
+              <Header />
+              <main className="flex-1">{children}</main>
+              <Footer />
+            </div>
+          </HyperspaceProvider>
         </ThemeProvider>
       </body>
     </html>

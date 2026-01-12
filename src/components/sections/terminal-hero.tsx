@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useHyperspace } from "@/context/hyperspace-context";
 
 // Boot sequence phases for a spacecraft terminal
 const bootSequence = [
@@ -37,6 +38,7 @@ const spacecraftArt = `
 `;
 
 export function TerminalHero() {
+  const { startJourney } = useHyperspace();
   const [bootPhase, setBootPhase] = useState(0);
   const [bootLineIndex, setBootLineIndex] = useState(0);
   const [showMain, setShowMain] = useState(false);
@@ -287,9 +289,12 @@ export function TerminalHero() {
                   <div className={`mt-10 flex flex-wrap gap-4 transition-all duration-700 ${
                     showCTA ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
                   }`}>
-                    <Link href="/projects" className="btn-cyber group">
+                    <button
+                      onClick={() => startJourney('/projects')}
+                      className="btn-cyber group"
+                    >
                       <span className="relative z-10">EXPLORE_MISSIONS</span>
-                    </Link>
+                    </button>
                     <Link href="/about" className="btn-ghost-cyber">
                       PILOT_PROFILE
                     </Link>
