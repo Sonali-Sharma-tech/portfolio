@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useState } from "react";
 
 // Parallax Starfield - multiple layers at different speeds
 function Starfield() {
@@ -18,11 +18,23 @@ function Nebula() {
   return <div className="nebula" aria-hidden="true" />;
 }
 
+// Matrix column type
+interface MatrixColumn {
+  id: number;
+  left: string;
+  delay: string;
+  duration: string;
+  text: string;
+}
+
 // Matrix-style code rain with space characters
 function MatrixRain() {
-  const columns = useMemo(() => {
+  const [columns, setColumns] = useState<MatrixColumn[]>([]);
+
+  // Generate columns only on client side to avoid hydration mismatch
+  useEffect(() => {
     const chars = "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
-    const cols = [];
+    const cols: MatrixColumn[] = [];
 
     for (let i = 0; i < 30; i++) {
       const text = Array.from(
@@ -39,8 +51,13 @@ function MatrixRain() {
       });
     }
 
-    return cols;
+    setColumns(cols);
   }, []);
+
+  // Don't render until client-side generation is complete
+  if (columns.length === 0) {
+    return <div className="matrix-rain" aria-hidden="true" />;
+  }
 
   return (
     <div className="matrix-rain" aria-hidden="true">
