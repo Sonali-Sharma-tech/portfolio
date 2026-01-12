@@ -599,7 +599,7 @@ export default function ProjectsPage() {
                 onKeyDown={handleTerminalKeyDown}
                 placeholder={activeFilter !== 'all' ? 'clear' : 'type tag...'}
                 className="bg-transparent text-white placeholder:text-text-muted/40 w-28 font-mono text-sm [&:focus]:outline-none [&:focus]:ring-0 [&:focus]:border-none [&]:outline-none [&]:border-none [&]:ring-0"
-                style={{ caretColor: '#00fff5', boxShadow: 'none', outline: 'none', border: 'none' }}
+                style={{ caretColor: '#00fff5', boxShadow: 'none', outline: 'none', border: 'none', caretShape: 'block' }}
               />
             </div>
 

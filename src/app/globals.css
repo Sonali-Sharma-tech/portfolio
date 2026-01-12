@@ -203,6 +203,12 @@ body {
   99% { opacity: 1; }
 }
 
+/* Scanline effect for HUD */
+@keyframes scanline {
+  0% { top: 0%; }
+  100% { top: 100%; }
+}
+
 /* ============================================
    TYPOGRAPHY - Terminal & Space
    ============================================ */
@@ -329,6 +335,34 @@ h3 {
   40% { transform: translate(3px, 3px); }
   60% { transform: translate(-3px, -3px); }
   80% { transform: translate(-3px, 3px); }
+}
+
+/* Glitch text - subtle version */
+.glitch-text {
+  position: relative;
+}
+
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.8;
+}
+
+.glitch-text::before {
+  color: var(--neon-cyan);
+  animation: glitch-1 3s infinite linear alternate-reverse;
+  clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+}
+
+.glitch-text::after {
+  color: var(--neon-magenta);
+  animation: glitch-2 4s infinite linear alternate-reverse;
+  clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
 }
 
 /* Glitch on hover */
