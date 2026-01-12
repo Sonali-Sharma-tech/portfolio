@@ -89,14 +89,14 @@ export function TerminalHero() {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Terminal */}
           <div className="order-2 lg:order-1">
-            <div className="terminal-card max-w-2xl">
-              <div className="terminal-header">
+            <div className="terminal-card max-w-2xl h-[480px] flex flex-col">
+              <div className="terminal-header flex-shrink-0">
                 <div className="terminal-dot terminal-dot-red" />
                 <div className="terminal-dot terminal-dot-yellow" />
                 <div className="terminal-dot terminal-dot-green" />
                 <span className="terminal-title">sonali@dev ~ /portfolio</span>
               </div>
-              <div className="terminal-body">
+              <div className="terminal-body flex-1 overflow-hidden">
                 <TerminalLine
                   prompt="$"
                   command="whoami"
@@ -202,10 +202,11 @@ export function TerminalHero() {
           </div>
         </div>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-          <span className="text-xs font-mono text-text-muted tracking-widest">SCROLL</span>
-          <div className="w-px h-8 bg-gradient-to-b from-cyan to-transparent" />
+        {/* Animated scroll indicator - no text, just visual cue */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center">
+          <div className="w-6 h-10 border-2 border-cyan/30 rounded-full flex justify-center pt-2">
+            <div className="w-1 h-2 bg-cyan rounded-full animate-bounce" />
+          </div>
         </div>
       </div>
     </section>
