@@ -307,14 +307,14 @@ function ProjectCard({
   );
 }
 
-// Filter categories with icons
+// Filter categories derived from actual project tags
 const filterCategories = [
   { id: "all", label: "ALL", icon: "◈", color: "cyan" },
-  { id: "react", label: "REACT", icon: "⚛️", color: "cyan" },
-  { id: "extension", label: "EXTENSION", icon: "💻", color: "magenta" },
-  { id: "tools", label: "TOOLS", icon: "🔧", color: "green" },
-  { id: "docs", label: "DOCS", icon: "📝", color: "cyan" },
-  { id: "fullstack", label: "FULL_STACK", icon: "▲", color: "magenta" },
+  { id: "typescript", label: "TypeScript", icon: "TS", color: "cyan" },
+  { id: "react", label: "React", icon: "⚛️", color: "cyan" },
+  { id: "vs code", label: "VS Code", icon: "💻", color: "magenta" },
+  { id: "developer tools", label: "Dev Tools", icon: "🔧", color: "green" },
+  { id: "productivity", label: "Productivity", icon: "⚡", color: "magenta" },
 ];
 
 export default function ProjectsPage() {
@@ -333,25 +333,68 @@ export default function ProjectsPage() {
   return (
     <>
       {/* ========================================
-          CYBERPUNK HERO - Clean & Bold
+          SPACE HERO - Galaxy Elements
           ======================================== */}
       <section className="hero-compact relative overflow-hidden">
-        {/* Scanning line animation */}
+        {/* Floating orbs / planets */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {/* <div
-            className="absolute left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan/50 to-transparent"
+          {/* Large cyan orb */}
+          <div
+            className="absolute w-64 h-64 rounded-full opacity-10 blur-3xl"
             style={{
-              animation: 'scan 4s ease-in-out infinite',
+              background: 'radial-gradient(circle, rgba(0,255,245,0.8) 0%, transparent 70%)',
+              top: '10%',
+              right: '-5%',
+              animation: 'float 8s ease-in-out infinite',
             }}
           />
+          {/* Medium magenta orb */}
+          <div
+            className="absolute w-48 h-48 rounded-full opacity-10 blur-3xl"
+            style={{
+              background: 'radial-gradient(circle, rgba(255,0,255,0.8) 0%, transparent 70%)',
+              bottom: '20%',
+              left: '-10%',
+              animation: 'float 10s ease-in-out infinite reverse',
+            }}
+          />
+          {/* Small stars - deterministic positions */}
+          {[
+            { left: 10, top: 15, opacity: 0.5, duration: 2.5, delay: 0.2 },
+            { left: 25, top: 8, opacity: 0.7, duration: 3.2, delay: 0.8 },
+            { left: 40, top: 22, opacity: 0.4, duration: 2.8, delay: 1.5 },
+            { left: 55, top: 5, opacity: 0.6, duration: 3.5, delay: 0.5 },
+            { left: 70, top: 18, opacity: 0.8, duration: 2.2, delay: 1.2 },
+            { left: 85, top: 12, opacity: 0.5, duration: 3.0, delay: 0.3 },
+            { left: 15, top: 65, opacity: 0.6, duration: 2.7, delay: 1.8 },
+            { left: 30, top: 78, opacity: 0.4, duration: 3.3, delay: 0.7 },
+            { left: 50, top: 85, opacity: 0.7, duration: 2.4, delay: 1.0 },
+            { left: 75, top: 72, opacity: 0.5, duration: 2.9, delay: 1.6 },
+            { left: 90, top: 55, opacity: 0.6, duration: 3.1, delay: 0.4 },
+            { left: 5, top: 40, opacity: 0.8, duration: 2.6, delay: 1.3 },
+          ].map((star, i) => (
+            <div
+              key={i}
+              className="absolute w-1 h-1 bg-white rounded-full"
+              style={{
+                left: `${star.left}%`,
+                top: `${star.top}%`,
+                opacity: star.opacity,
+                animation: `twinkle ${star.duration}s ease-in-out infinite`,
+                animationDelay: `${star.delay}s`,
+              }}
+            />
+          ))}
           <style>{`
-            @keyframes scan {
-              0%, 100% { top: 0%; opacity: 0; }
-              10% { opacity: 1; }
-              90% { opacity: 1; }
-              50% { top: 100%; }
+            @keyframes float {
+              0%, 100% { transform: translateY(0) scale(1); }
+              50% { transform: translateY(-20px) scale(1.05); }
             }
-          `}</style> */}
+            @keyframes twinkle {
+              0%, 100% { opacity: 0.3; transform: scale(1); }
+              50% { opacity: 1; transform: scale(1.5); }
+            }
+          `}</style>
         </div>
 
         <div className="container relative z-10">
@@ -362,12 +405,18 @@ export default function ProjectsPage() {
                 PROJECTS
               </span>
             </h1>
-          
+            {/* Orbiting dot */}
+            <div className="absolute -right-4 top-1/2 -translate-y-1/2">
+              <div
+                className="w-3 h-3 bg-cyan rounded-full shadow-[0_0_15px_rgba(0,255,245,0.8)]"
+                style={{ animation: 'pulse 2s ease-in-out infinite' }}
+              />
+            </div>
           </div>
 
-          {/* Tagline */}
-          <p className="text-lg md:text-xl text-text-secondary max-w-md mb-8">
-            Building the future, one commit at a time.
+          {/* Tagline - More creative */}
+          <p className="text-lg md:text-xl text-text-secondary max-w-md mb-8 font-mono">
+            <span className="text-cyan">{">"}</span> Exploring the digital cosmos through code
           </p>
 
           {/* Quick filters / tags */}
