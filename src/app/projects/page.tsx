@@ -321,22 +321,18 @@ export default function ProjectsPage() {
   const allProjects = getAllProjects();
   const [activeFilter, setActiveFilter] = useState("all");
   const [terminalInput, setTerminalInput] = useState("");
-  const [showCursor, setShowCursor] = useState(true);
-
-  // Blinking cursor effect
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setShowCursor(prev => !prev);
-    }, 530);
-    return () => clearInterval(interval);
-  }, []);
-
+  const [errorMessage, setErrorMessage] = useState("");
+  const [showError, setShowError] = useState(false);
   // Handle terminal input
   const handleTerminalKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       const cmd = terminalInput.toLowerCase().trim();
+
+      if (!cmd) return; // Ignore empty input
+
       if (cmd === 'clear' || cmd === 'reset' || cmd === 'all') {
         setActiveFilter('all');
+        setShowError(false);
       } else {
         // Try to match a filter
         const matchedFilter = filterCategories.find(f =>
@@ -346,16 +342,17 @@ export default function ProjectsPage() {
         );
         if (matchedFilter) {
           setActiveFilter(matchedFilter.id);
+          setShowError(false);
+        } else {
+          // No match - show error feedback
+          setErrorMessage(`"${terminalInput}" not found`);
+          setShowError(true);
+          setTimeout(() => setShowError(false), 2000);
         }
       }
       setTerminalInput('');
     }
   };
-
-  // Update terminal when filter changes via button click
-  // const handleFilterClick = (filterId: string) => {
-  //   setActiveFilter(filterId);
-  // };
 
   // Filter projects based on selected category
   const projects = activeFilter === "all"
@@ -584,8 +581,8 @@ export default function ProjectsPage() {
 
           {/* Interactive terminal filter */}
           <div className="mb-8">
-            <div className="inline-flex items-center gap-1 text-sm font-mono bg-space-surface/80 border border-border px-4 py-3 rounded">
-              <span className="text-green">$</span>
+            <div className={`inline-flex items-center gap-1 text-sm font-mono bg-space-surface/80 border px-4 py-3 rounded transition-all duration-300 ${showError ? 'border-red-500/50 animate-pulse' : 'border-border'}`}>
+              <span className={`${showError ? 'text-red-500' : 'text-green'} transition-colors`}>$</span>
               <span className="text-text-muted ml-2">filter</span>
               <span className="text-cyan ml-1">~/projects</span>
               {activeFilter !== 'all' && (
@@ -600,20 +597,28 @@ export default function ProjectsPage() {
                 value={terminalInput}
                 onChange={(e) => setTerminalInput(e.target.value)}
                 onKeyDown={handleTerminalKeyDown}
-                placeholder={activeFilter !== 'all' ? '"clear" to reset' : 'react, typescript, tools...'}
-                className="bg-transparent border-none outline-none text-white placeholder:text-text-muted/50 w-44 font-mono text-sm"
+                placeholder={activeFilter !== 'all' ? 'clear' : 'type tag...'}
+                className="bg-transparent text-white placeholder:text-text-muted/40 w-28 font-mono text-sm [&:focus]:outline-none [&:focus]:ring-0 [&:focus]:border-none [&]:outline-none [&]:border-none [&]:ring-0"
+                style={{ caretColor: '#00fff5', boxShadow: 'none', outline: 'none', border: 'none' }}
               />
-              <span className={`w-2 h-5 bg-cyan ${showCursor ? 'opacity-100' : 'opacity-0'} transition-opacity`} />
             </div>
-            {activeFilter !== 'all' ? (
-              <div className="mt-3 text-xs font-mono text-text-muted">
-                <span className="text-green">✓</span> Filtering by <span className="text-cyan">{activeFilter}</span> — type <span className="text-magenta">clear</span> + Enter to reset
-              </div>
-            ) : (
-              <div className="mt-3 text-xs font-mono text-text-muted">
-                <span className="text-cyan">→</span> Type a tag and press Enter to filter projects
-              </div>
-            )}
+
+            {/* Status line */}
+            <div className="mt-3 text-xs font-mono">
+              {showError ? (
+                <span className="text-red-400">
+                  <span className="text-red-500">✗</span> {errorMessage} — try: {filterCategories.slice(1).map(f => f.label.toLowerCase()).join(', ')}
+                </span>
+              ) : activeFilter !== 'all' ? (
+                <span className="text-text-muted">
+                  <span className="text-green">✓</span> Filtering by <span className="text-cyan">{activeFilter}</span> — type <span className="text-magenta">clear</span> + Enter to reset
+                </span>
+              ) : (
+                <span className="text-text-muted">
+                  <span className="text-cyan">→</span> {filterCategories.slice(1).map(f => <span key={f.id} className="text-text-muted/60 hover:text-cyan cursor-default mx-1">{f.label.toLowerCase()}</span>)}
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Quick filters - Temporarily commented out
