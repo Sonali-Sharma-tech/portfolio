@@ -6,6 +6,8 @@ export interface Project {
   featured: boolean;
   github: string;
   live?: string;
+  preview?: string;
+  color?: string;
 }
 
 // Featured projects
@@ -18,6 +20,7 @@ export const projects: Project[] = [
     tags: ["TypeScript", "Developer Tools", "Productivity", "Utilities"],
     featured: true,
     github: "https://github.com/Sonali-Sharma-tech/devtoolkit",
+    color: "cyan",
   },
   {
     slug: "colorful-carbon-extension",
@@ -27,6 +30,7 @@ export const projects: Project[] = [
     tags: ["TypeScript", "VS Code", "Developer Tools", "Themes"],
     featured: true,
     github: "https://github.com/Sonali-Sharma-tech/colorful-carbon-extension",
+    color: "magenta",
   },
   {
     slug: "black-note",
@@ -36,6 +40,7 @@ export const projects: Project[] = [
     tags: ["React", "Notes", "Productivity", "Dark Mode"],
     featured: true,
     github: "https://github.com/Sonali-Sharma-tech/black-note",
+    color: "green",
   },
 ];
 
