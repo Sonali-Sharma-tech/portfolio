@@ -78,52 +78,7 @@ function MatrixRain() {
   );
 }
 
-// Floating astronaut/rocket decorations
-function FloatingSpaceObjects() {
-  return (
-    <>
-      {/* Floating astronaut - top right */}
-      <div
-        className="astronaut hidden lg:block"
-        style={{ top: "15%", right: "10%" }}
-        aria-hidden="true"
-      >
-        🧑‍🚀
-      </div>
-
-      {/* Floating rocket - bottom left */}
-      <div
-        className="astronaut hidden lg:block"
-        style={{
-          bottom: "20%",
-          left: "5%",
-          fontSize: "4rem",
-          animationDelay: "-10s",
-          animationDuration: "25s"
-        }}
-        aria-hidden="true"
-      >
-        🚀
-      </div>
-
-      {/* Satellite - mid left */}
-      <div
-        className="astronaut hidden xl:block"
-        style={{
-          top: "40%",
-          left: "3%",
-          fontSize: "3rem",
-          animationDelay: "-5s",
-          animationDuration: "30s",
-          opacity: 0.05
-        }}
-        aria-hidden="true"
-      >
-        🛸
-      </div>
-    </>
-  );
-}
+// Floating space objects removed - they were distracting from the main terminal UI
 
 // Shooting stars - occasional streaks
 function ShootingStars() {
@@ -186,7 +141,6 @@ export function SpaceEffects() {
       <Starfield />
       <Nebula />
       <MatrixRain />
-      <FloatingSpaceObjects />
       <ShootingStars />
     </>
   );

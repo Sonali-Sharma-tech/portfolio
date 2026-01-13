@@ -1,12 +1,8 @@
 import type { Metadata } from "next";
 import { Orbitron, Exo_2, Fira_Code } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
-import { SpaceEffects } from "@/components/effects/space-effects";
-import { CyberEffects } from "@/components/effects/cyber-effects";
 import { HyperspaceProvider } from "@/context/hyperspace-context";
-import { HyperspaceJourneyWrapper } from "@/components/effects/hyperspace-wrapper";
+import { LayoutWrapper } from "@/components/layout/layout-wrapper";
 import "./globals.css";
 
 // Futuristic display font for headings
@@ -63,20 +59,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <HyperspaceProvider>
-            {/* Space background effects - starfield, nebula */}
-            <SpaceEffects />
-
-            {/* Cyberpunk effects - glitch, cursor, scanlines */}
-            <CyberEffects />
-
-            {/* Hyperspace journey overlay */}
-            <HyperspaceJourneyWrapper />
-
-            <div className="relative flex min-h-screen flex-col">
-              <Header />
-              <main className="flex-1">{children}</main>
-              <Footer />
-            </div>
+            <LayoutWrapper>{children}</LayoutWrapper>
           </HyperspaceProvider>
         </ThemeProvider>
       </body>

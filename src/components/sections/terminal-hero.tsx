@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useHyperspace } from "@/context/hyperspace-context";
 
 // Boot sequence phases for a spacecraft terminal
 const bootSequence = [
@@ -38,7 +37,6 @@ const spacecraftArt = `
 `;
 
 export function TerminalHero() {
-  const { startJourney } = useHyperspace();
   const [bootPhase, setBootPhase] = useState(0);
   const [bootLineIndex, setBootLineIndex] = useState(0);
   const [showMain, setShowMain] = useState(false);
@@ -289,12 +287,12 @@ export function TerminalHero() {
                   <div className={`mt-10 flex flex-wrap gap-4 transition-all duration-700 ${
                     showCTA ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
                   }`}>
-                    <button
-                      onClick={() => startJourney('/projects')}
-                      className="btn-cyber group"
-                    >
-                      <span className="relative z-10">EXPLORE_MISSIONS</span>
-                    </button>
+                    <Link href="/journey" className="btn-cyber group">
+                      <span className="relative z-10">🚀 LAUNCH VOYAGE</span>
+                    </Link>
+                    <Link href="/projects" className="btn-ghost-cyber">
+                      EXPLORE_MISSIONS
+                    </Link>
                     <Link href="/about" className="btn-ghost-cyber">
                       PILOT_PROFILE
                     </Link>
@@ -321,25 +319,6 @@ export function TerminalHero() {
                 <span suppressHydrationWarning className="text-magenta/60">{systemTime}</span>
                 <span className="text-border">UTC</span>
               </div>
-            </div>
-          </div>
-
-          {/* Decorative side panels - hidden on mobile */}
-          <div className="hidden lg:block absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full pr-8">
-            <div className="text-[10px] font-mono text-cyan/30 space-y-1 text-right">
-              <div>◇ SYS_HEALTH: 100%</div>
-              <div>◇ MEM_ALLOC: 64GB</div>
-              <div>◇ CORE_TEMP: 42°C</div>
-              <div>◇ PWR_LEVEL: OPTIMAL</div>
-            </div>
-          </div>
-
-          <div className="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 translate-x-full pl-8">
-            <div className="text-[10px] font-mono text-magenta/30 space-y-1">
-              <div>QUANTUM_LINK: STABLE ◇</div>
-              <div>NEURAL_SYNC: 99.7% ◇</div>
-              <div>DATA_STREAM: ACTIVE ◇</div>
-              <div>FIREWALL: ENGAGED ◇</div>
             </div>
           </div>
 
