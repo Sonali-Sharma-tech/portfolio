@@ -1,0 +1,315 @@
+/* ============================================
+   VOYAGE JOURNEY - Space Voyage Animations
+   Extracted from globals.css for code splitting
+   Only loaded on /journey route
+   ============================================ */
+
+/* Voyage container */
+.voyage-container {
+  scrollbar-width: thin;
+  scrollbar-color: var(--neon-cyan) var(--space-void);
+}
+
+.voyage-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.voyage-container::-webkit-scrollbar-track {
+  background: var(--space-void);
+}
+
+.voyage-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, var(--neon-cyan), var(--neon-magenta));
+  border-radius: 2px;
+}
+
+/* Earth rotation */
+@keyframes earth-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Star twinkle */
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+/* Speed lines for launch/warp */
+@keyframes speed-line-fall {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+
+/* Flame flicker for rocket */
+@keyframes flame-flicker {
+  0%, 100% {
+    opacity: 0.8;
+    transform: scaleY(1) translateY(0);
+  }
+  25% {
+    opacity: 1;
+    transform: scaleY(1.1) translateY(2px);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scaleY(1.15) translateY(4px);
+  }
+  75% {
+    opacity: 1;
+    transform: scaleY(1.05) translateY(1px);
+  }
+}
+
+/* Wormhole tunnel rings */
+@keyframes tunnel-ring {
+  0% {
+    transform: translate(-50%, -50%) scale(0.1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(3);
+    opacity: 0;
+  }
+}
+
+/* Screen shake for launch */
+@keyframes screen-shake {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  10% {
+    transform: translate(-2px, -1px);
+  }
+  20% {
+    transform: translate(2px, 1px);
+  }
+  30% {
+    transform: translate(-1px, 2px);
+  }
+  40% {
+    transform: translate(1px, -2px);
+  }
+  50% {
+    transform: translate(-2px, 1px);
+  }
+  60% {
+    transform: translate(2px, -1px);
+  }
+  70% {
+    transform: translate(-1px, -2px);
+  }
+  80% {
+    transform: translate(1px, 2px);
+  }
+  90% {
+    transform: translate(-2px, -1px);
+  }
+}
+
+.voyage-shake {
+  animation: screen-shake 0.1s infinite;
+}
+
+/* Galaxy spiral rotation */
+@keyframes galaxy-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Celebration float */
+@keyframes celebrate-float {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(-20px) scale(1.1);
+    opacity: 1;
+  }
+}
+
+/* Station pulse */
+@keyframes station-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px currentColor;
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 40px currentColor;
+    transform: scale(1.1);
+  }
+}
+
+/* Wormhole color shift */
+@keyframes wormhole-hue {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  50% {
+    filter: hue-rotate(60deg);
+  }
+  100% {
+    filter: hue-rotate(0deg);
+  }
+}
+
+/* Matrix code rain */
+@keyframes matrix-rain {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+/* Rainbow orb float */
+@keyframes orb-float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(20px, -20px) scale(1.1);
+  }
+  50% {
+    transform: translate(-10px, 20px) scale(0.9);
+  }
+  75% {
+    transform: translate(-20px, -10px) scale(1.05);
+  }
+}
+
+/* Minimal particle float */
+@keyframes particle-drift {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-30px);
+    opacity: 0.6;
+  }
+}
+
+/* Text glitch for wormhole */
+@keyframes text-glitch {
+  0% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-3px);
+  }
+  40% {
+    transform: translateX(3px);
+  }
+  60% {
+    transform: translateX(-2px);
+  }
+  80% {
+    transform: translateX(2px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* Chromatic aberration */
+@keyframes chromatic-shift {
+  0%, 100% {
+    text-shadow:
+      -2px 0 rgba(255, 0, 0, 0.5),
+      2px 0 rgba(0, 255, 255, 0.5);
+  }
+  50% {
+    text-shadow:
+      2px 0 rgba(255, 0, 0, 0.5),
+      -2px 0 rgba(0, 255, 255, 0.5);
+  }
+}
+
+.chromatic-text {
+  animation: chromatic-shift 0.1s infinite;
+}
+
+/* Flash effect */
+@keyframes flash {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Blink cursor */
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+.animate-blink {
+  animation: blink 1s infinite;
+}
+
+/* Station types visual classes */
+.station-dock {
+  width: 60px;
+  height: 60px;
+}
+
+.station-satellite {
+  width: 80px;
+  height: 80px;
+}
+
+.station-freighter {
+  width: 120px;
+  height: 80px;
+}
+
+.station-mothership {
+  width: 160px;
+  height: 140px;
+}
+
+/* Voyage mobile optimizations */
+@media (max-width: 768px) {
+  .voyage-container {
+    touch-action: pan-y;
+  }
+
+  .voyage-viewport {
+    overflow: hidden;
+  }
+}
