@@ -1,0 +1,214 @@
+/* ==========================================
+   CYBERPUNK CITY JOURNEY STYLES
+   Night City Navigator theme
+   ========================================== */
+
+/* CSS Variables */
+:root {
+  --city-dark: #0a0a12;
+  --city-building: #1a1a2e;
+  --neon-cyan: #00fff5;
+  --neon-magenta: #ff00ff;
+  --neon-orange: #ff6600;
+  --neon-green: #00ff88;
+  --rain-blue: #4488ff;
+  --fog-purple: rgba(100, 50, 150, 0.3);
+}
+
+/* Base container */
+.city-container {
+  background: var(--city-dark);
+  color: white;
+  font-family: system-ui, -apple-system, sans-serif;
+  overflow: hidden;
+}
+
+/* Viewport that shifts with drone movement */
+.city-viewport {
+  transform-origin: center center;
+  will-change: transform;
+}
+
+/* Canvas container */
+.city-container canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Neon glow text utility */
+.neon-text {
+  text-shadow:
+    0 0 5px currentColor,
+    0 0 10px currentColor,
+    0 0 20px currentColor,
+    0 0 40px currentColor;
+}
+
+/* Cyberpunk border accent */
+.cyber-border {
+  border: 1px solid rgba(0, 255, 245, 0.3);
+  box-shadow:
+    0 0 10px rgba(0, 255, 245, 0.1),
+    inset 0 0 10px rgba(0, 255, 245, 0.05);
+}
+
+/* Glitch animation for text */
+@keyframes glitch {
+  0% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
+  }
+  100% {
+    transform: translate(0);
+  }
+}
+
+.glitch-text {
+  animation: glitch 0.3s infinite;
+}
+
+/* Scanlines overlay */
+.scanlines {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255, 255, 255, 0.03) 2px,
+    rgba(255, 255, 255, 0.03) 4px
+  );
+  pointer-events: none;
+}
+
+/* Rain effect */
+@keyframes rain-fall {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+.rain-drop {
+  animation: rain-fall 0.5s linear infinite;
+}
+
+/* Neon pulse animation */
+@keyframes neon-pulse {
+  0%, 100% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+  50% {
+    opacity: 0.8;
+    filter: brightness(1.2);
+  }
+}
+
+.neon-pulse {
+  animation: neon-pulse 2s ease-in-out infinite;
+}
+
+/* Hologram flicker */
+@keyframes hologram-flicker {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.95;
+  }
+  52% {
+    opacity: 0.6;
+  }
+  54% {
+    opacity: 0.95;
+  }
+}
+
+.hologram {
+  animation: hologram-flicker 3s ease-in-out infinite;
+}
+
+/* Gradient text utility */
+.gradient-text {
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta), var(--neon-green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Panel glassmorphism */
+.glass-panel {
+  background: linear-gradient(
+    135deg,
+    rgba(10, 10, 18, 0.9) 0%,
+    rgba(26, 26, 46, 0.85) 100%
+  );
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Custom scrollbar (for any scrollable areas) */
+.city-container ::-webkit-scrollbar {
+  width: 4px;
+}
+
+.city-container ::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.city-container ::-webkit-scrollbar-thumb {
+  background: var(--neon-cyan);
+  border-radius: 2px;
+}
+
+/* Focus states for accessibility */
+.city-container *:focus-visible {
+  outline: 2px solid var(--neon-cyan);
+  outline-offset: 2px;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .city-container {
+    touch-action: none;
+  }
+
+  /* Reduce visual complexity on mobile */
+  .scanlines {
+    display: none;
+  }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .neon-pulse,
+  .hologram,
+  .glitch-text {
+    animation: none;
+  }
+
+  .rain-drop {
+    animation-duration: 2s;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .glass-panel {
+    background: rgba(0, 0, 0, 0.95);
+    border-color: white;
+  }
+}
