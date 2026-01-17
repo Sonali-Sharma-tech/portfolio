@@ -206,3 +206,162 @@ export function getSceneProgress(scrollProgress: number, sceneStart: number, sce
   if (scrollProgress > sceneEnd) return 1;
   return (scrollProgress - sceneStart) / (sceneEnd - sceneStart);
 }
+
+// ==========================================
+// CONSTELLATION MAP DATA
+// Star positions and skill categories for the new journey
+// ==========================================
+
+export interface StarPosition {
+  id: string;
+  x: number;  // normalized -1 to 1
+  y: number;
+  z: number;
+  type: 'origin' | 'company' | 'project';
+}
+
+export interface SkillCategory {
+  name: string;
+  color: string;
+  skills: string[];
+}
+
+// Star positions form a constellation pattern
+// Origin at bottom, career ascends upward, projects branch out at top
+export const constellationLayout: StarPosition[] = [
+  // Origin point
+  { id: "origin", x: 0, y: -0.8, z: 0, type: 'origin' },
+  // Career stars - ascending diagonal path
+  { id: "ey", x: -0.4, y: -0.45, z: 0.1, type: 'company' },
+  { id: "6figr", x: -0.15, y: -0.1, z: -0.05, type: 'company' },
+  { id: "captain-fresh", x: 0.15, y: 0.25, z: 0.1, type: 'company' },
+  { id: "glance", x: 0.4, y: 0.55, z: 0, type: 'company' },
+  // Projects - branching at the top
+  { id: "devtoolkit", x: -0.35, y: 0.8, z: 0.15, type: 'project' },
+  { id: "colorful-extension", x: 0.05, y: 0.95, z: -0.1, type: 'project' },
+  { id: "black-note", x: 0.45, y: 0.85, z: 0.1, type: 'project' },
+];
+
+// Connections between stars (forms the constellation lines)
+export const constellationConnections: [string, string][] = [
+  ['origin', 'ey'],
+  ['ey', '6figr'],
+  ['6figr', 'captain-fresh'],
+  ['captain-fresh', 'glance'],
+  // Branch to projects
+  ['glance', 'devtoolkit'],
+  ['glance', 'colorful-extension'],
+  ['glance', 'black-note'],
+  // Connect projects horizontally
+  ['devtoolkit', 'colorful-extension'],
+  ['colorful-extension', 'black-note'],
+];
+
+// Skill categories for visualization
+export const skillCategories: SkillCategory[] = [
+  {
+    name: "Frontend",
+    color: "cyan",
+    skills: ["React", "Svelte", "SvelteKit", "TypeScript", "Next.js", "Angular"]
+  },
+  {
+    name: "State & Data",
+    color: "green",
+    skills: ["Redux", "GraphQL", "REST APIs", "Zustand"]
+  },
+  {
+    name: "Tools",
+    color: "orange",
+    skills: ["Git", "VS Code", "Figma", "Webpack", "Vite"]
+  },
+  {
+    name: "UI Libraries",
+    color: "magenta",
+    skills: ["Ant Design", "Tailwind CSS", "Framer Motion", "Three.js"]
+  },
+];
+
+// New scene ranges for constellation journey
+export const constellationSceneRanges = {
+  intro: { start: 0, end: 10 },      // Star chart overview
+  origin: { start: 10, end: 20 },    // Origin star - Indore
+  career: { start: 20, end: 65 },    // Career constellation
+  warp: { start: 65, end: 75 },      // Warp bridge transition
+  projects: { start: 75, end: 95 },  // Project nebula
+  reveal: { start: 95, end: 100 },   // Full constellation reveal
+};
+
+// Get star data by ID
+export function getStarById(id: string): StarPosition | undefined {
+  return constellationLayout.find(star => star.id === id);
+}
+
+// Get company or project data by star ID
+export function getStarContent(id: string) {
+  if (id === 'origin') {
+    return { type: 'origin', data: voyageData.origin };
+  }
+  const company = voyageData.companies.find(c => c.id === id);
+  if (company) {
+    return { type: 'company', data: company };
+  }
+  const project = voyageData.projects.find(p => p.id === id);
+  if (project) {
+    return { type: 'project', data: project };
+  }
+  return null;
+}
+
+// Get current constellation scene
+export function getConstellationScene(progress: number): string {
+  const { intro, origin, career, warp, projects } = constellationSceneRanges;
+  if (progress < intro.end) return 'intro';
+  if (progress < origin.end) return 'origin';
+  if (progress < career.end) return 'career';
+  if (progress < warp.end) return 'warp';
+  if (progress < projects.end) return 'projects';
+  return 'reveal';
+}
+
+// Get active star based on progress
+export function getActiveStar(progress: number): StarPosition | null {
+  const scene = getConstellationScene(progress);
+
+  if (scene === 'origin') {
+    return constellationLayout.find(s => s.id === 'origin') || null;
+  }
+
+  if (scene === 'career') {
+    // Map career progress (20-65%) to company index (0-3)
+    const careerProgress = (progress - 20) / 45; // 0 to 1
+    const companyIndex = Math.min(3, Math.floor(careerProgress * 4));
+    const companyIds = ['ey', '6figr', 'captain-fresh', 'glance'];
+    return constellationLayout.find(s => s.id === companyIds[companyIndex]) || null;
+  }
+
+  if (scene === 'projects') {
+    // Map project progress (75-95%) to project index (0-2)
+    const projectProgress = (progress - 75) / 20; // 0 to 1
+    const projectIndex = Math.min(2, Math.floor(projectProgress * 3));
+    const projectIds = ['devtoolkit', 'colorful-extension', 'black-note'];
+    return constellationLayout.find(s => s.id === projectIds[projectIndex]) || null;
+  }
+
+  return null;
+}
+
+// Get stars that should be illuminated (visited) based on progress
+export function getIlluminatedStars(progress: number): string[] {
+  const illuminated: string[] = [];
+
+  if (progress >= 10) illuminated.push('origin');
+  if (progress >= 25) illuminated.push('ey');
+  if (progress >= 37) illuminated.push('6figr');
+  if (progress >= 50) illuminated.push('captain-fresh');
+  if (progress >= 62) illuminated.push('glance');
+  if (progress >= 80) illuminated.push('devtoolkit');
+  if (progress >= 87) illuminated.push('colorful-extension');
+  if (progress >= 93) illuminated.push('black-note');
+
+  return illuminated;
+}
