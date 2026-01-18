@@ -32,6 +32,72 @@ interface ConstellationCanvasProps {
 // Scale factor for star positions
 const POSITION_SCALE = 30;
 
+// Seeded random number generator for deterministic "random" values
+// This avoids the React purity issue with Math.random()
+function seededRandom(seed: number): number {
+  const x = Math.sin(seed * 9999) * 10000;
+  return x - Math.floor(x);
+}
+
+// Pre-generate distant star field geometry (outside of React render cycle)
+function createDistantStarGeometry(count: number) {
+  const positions = new Float32Array(count * 3);
+  const colors = new Float32Array(count * 3);
+  const sizes = new Float32Array(count);
+
+  const starColors = [
+    { r: 1, g: 1, b: 1 },           // white
+    { r: 0.67, g: 0.8, b: 1 },      // light blue
+    { r: 0.53, g: 0.67, b: 1 },     // blue
+    { r: 1, g: 0.87, b: 0.67 },     // warm
+    { r: 1, g: 0.8, b: 0.8 },       // pink
+  ];
+
+  for (let i = 0; i < count; i++) {
+    const i3 = i * 3;
+    const seed = i * 1.618033988749; // Golden ratio for better distribution
+
+    const theta = seededRandom(seed) * Math.PI * 2;
+    const phi = Math.acos(2 * seededRandom(seed + 1) - 1);
+    const radius = 50 + seededRandom(seed + 2) * 150;
+
+    positions[i3] = radius * Math.sin(phi) * Math.cos(theta);
+    positions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+    positions[i3 + 2] = radius * Math.cos(phi);
+
+    const color = starColors[Math.floor(seededRandom(seed + 3) * starColors.length)];
+    colors[i3] = color.r;
+    colors[i3 + 1] = color.g;
+    colors[i3 + 2] = color.b;
+
+    sizes[i] = seededRandom(seed + 4) * 0.15 + 0.05;
+  }
+
+  return { positions, colors, sizes };
+}
+
+// Pre-generate cosmic dust geometry (outside of React render cycle)
+function createCosmicDustGeometry(count: number) {
+  const positions = new Float32Array(count * 3);
+  const sizes = new Float32Array(count);
+
+  for (let i = 0; i < count; i++) {
+    const i3 = i * 3;
+    const seed = i * 2.718281828; // Euler's number for distribution
+
+    positions[i3] = (seededRandom(seed) - 0.5) * 100;
+    positions[i3 + 1] = (seededRandom(seed + 1) - 0.5) * 80;
+    positions[i3 + 2] = (seededRandom(seed + 2) - 0.5) * 60;
+    sizes[i] = seededRandom(seed + 3) * 0.1 + 0.02;
+  }
+
+  return { positions, sizes };
+}
+
+// Pre-computed geometries (generated once at module load, not during render)
+const DISTANT_STAR_DATA = createDistantStarGeometry(1500);
+const COSMIC_DUST_DATA = createCosmicDustGeometry(600);
+
 // Get color for a star based on its data
 function getStarColor(starId: string): string {
   if (starId === "origin") return "gold";
@@ -45,13 +111,11 @@ function getStarColor(starId: string): string {
 // Camera controller that follows progress
 function CameraController({
   progress,
-  activeStar,
   lateralOffset,
   isMoving,
   isBoosting,
 }: {
   progress: number;
-  activeStar: StarPosition | null;
   lateralOffset: number;
   isMoving: boolean;
   isBoosting: boolean;
@@ -59,14 +123,16 @@ function CameraController({
   const { camera } = useThree();
   const targetPos = useRef(new THREE.Vector3(0, 0, 60));
   const targetLookAt = useRef(new THREE.Vector3(0, 0, 0));
+  // Store boost offset separately to avoid mutating camera directly
+  const boostOffset = useRef({ x: 0, y: 0 });
 
-  useFrame((state, delta) => {
+  useFrame((state) => {
     const time = state.clock.elapsedTime;
     const { intro, origin, career, warp, projects, reveal } = constellationSceneRanges;
 
     // Calculate camera position based on scene
-    let newPos = new THREE.Vector3(0, 0, 60);
-    let newLookAt = new THREE.Vector3(0, 0, 0);
+    const newPos = new THREE.Vector3(0, 0, 60);
+    const newLookAt = new THREE.Vector3(0, 0, 0);
 
     if (progress < intro.end) {
       // Intro: High above, looking down at full star field
@@ -161,41 +227,80 @@ function CameraController({
     targetPos.current.lerp(newPos, lerpSpeed);
     targetLookAt.current.lerp(newLookAt, lerpSpeed);
 
-    camera.position.copy(targetPos.current);
-    camera.lookAt(targetLookAt.current);
-
-    // Add subtle movement when boosting
+    // Calculate boost offset (decays when not boosting)
     if (isBoosting && isMoving) {
-      camera.position.x += Math.sin(time * 20) * 0.1;
-      camera.position.y += Math.cos(time * 15) * 0.05;
+      boostOffset.current.x = Math.sin(time * 20) * 0.1;
+      boostOffset.current.y = Math.cos(time * 15) * 0.05;
+    } else {
+      boostOffset.current.x *= 0.9;
+      boostOffset.current.y *= 0.9;
     }
+
+    // Apply position including boost offset
+    camera.position.set(
+      targetPos.current.x + boostOffset.current.x,
+      targetPos.current.y + boostOffset.current.y,
+      targetPos.current.z
+    );
+    camera.lookAt(targetLookAt.current);
   });
 
   return null;
 }
 
-// Cosmic dust particles
-function CosmicDust({ count = 500 }: { count?: number }) {
+// Distant star field - additional twinkling stars
+// Uses pre-computed geometry to avoid Math.random() in render
+function DistantStarField() {
   const pointsRef = useRef<THREE.Points>(null);
 
+  // Use pre-computed geometry data (generated at module load, not during render)
   const geometry = useMemo(() => {
-    const positions = new Float32Array(count * 3);
-    const sizes = new Float32Array(count);
-
-    for (let i = 0; i < count; i++) {
-      const i3 = i * 3;
-      // Spread throughout the scene
-      positions[i3] = (Math.random() - 0.5) * 100;
-      positions[i3 + 1] = (Math.random() - 0.5) * 80;
-      positions[i3 + 2] = (Math.random() - 0.5) * 60;
-      sizes[i] = Math.random() * 0.1 + 0.02;
-    }
-
     const geom = new THREE.BufferGeometry();
-    geom.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-    geom.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
+    geom.setAttribute("position", new THREE.BufferAttribute(DISTANT_STAR_DATA.positions, 3));
+    geom.setAttribute("color", new THREE.BufferAttribute(DISTANT_STAR_DATA.colors, 3));
+    geom.setAttribute("size", new THREE.BufferAttribute(DISTANT_STAR_DATA.sizes, 1));
     return geom;
-  }, [count]);
+  }, []);
+
+  useFrame((state) => {
+    if (pointsRef.current) {
+      // Slow rotation
+      pointsRef.current.rotation.y = state.clock.elapsedTime * 0.002;
+
+      // Twinkle effect by modifying opacity
+      const material = pointsRef.current.material as THREE.PointsMaterial;
+      const time = state.clock.elapsedTime;
+      material.opacity = 0.5 + Math.sin(time * 0.5) * 0.2;
+    }
+  });
+
+  return (
+    <points ref={pointsRef} geometry={geometry}>
+      <pointsMaterial
+        size={0.12}
+        vertexColors
+        transparent
+        opacity={0.6}
+        sizeAttenuation
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
+      />
+    </points>
+  );
+}
+
+// Cosmic dust particles
+// Uses pre-computed geometry to avoid Math.random() in render
+function CosmicDust() {
+  const pointsRef = useRef<THREE.Points>(null);
+
+  // Use pre-computed geometry data (generated at module load, not during render)
+  const geometry = useMemo(() => {
+    const geom = new THREE.BufferGeometry();
+    geom.setAttribute("position", new THREE.BufferAttribute(COSMIC_DUST_DATA.positions, 3));
+    geom.setAttribute("size", new THREE.BufferAttribute(COSMIC_DUST_DATA.sizes, 1));
+    return geom;
+  }, []);
 
   useFrame((state) => {
     if (pointsRef.current) {
@@ -234,7 +339,6 @@ function SceneContent({
       {/* Camera control */}
       <CameraController
         progress={progress}
-        activeStar={activeStar}
         lateralOffset={lateralOffset}
         isMoving={isMoving}
         isBoosting={isBoosting}
@@ -243,19 +347,43 @@ function SceneContent({
       {/* Lighting */}
       <ambientLight intensity={0.15} />
 
-      {/* Background stars */}
+      {/* Background stars - multiple layers for depth */}
+      {/* Far layer - tiny distant stars */}
+      <Stars
+        radius={300}
+        depth={200}
+        count={8000}
+        factor={2}
+        saturation={0.1}
+        fade
+        speed={0.1}
+      />
+      {/* Mid layer - medium stars */}
       <Stars
         radius={150}
         depth={100}
-        count={3000}
-        factor={3}
-        saturation={0.2}
+        count={5000}
+        factor={4}
+        saturation={0.3}
         fade
         speed={0.2}
       />
+      {/* Near layer - brighter, larger stars */}
+      <Stars
+        radius={80}
+        depth={50}
+        count={2000}
+        factor={6}
+        saturation={0.5}
+        fade
+        speed={0.3}
+      />
 
-      {/* Cosmic dust */}
-      <CosmicDust count={400} />
+      {/* Cosmic dust - floating particles */}
+      <CosmicDust />
+
+      {/* Additional subtle star field for extra density */}
+      <DistantStarField />
 
       {/* Constellation lines */}
       <AllConstellationLines

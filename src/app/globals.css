@@ -1541,4 +1541,26 @@ a {
   }
 }
 
+/* ============================================
+   BLOG - Transmission/Radar Effects
+   ============================================ */
+
+@keyframes radar-sweep {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes scan-line {
+  0% { top: -10%; }
+  100% { top: 110%; }
+}
+
+.radar-sweep {
+  animation: radar-sweep 4s linear infinite;
+}
+
+.scan-line {
+  animation: scan-line 2s linear infinite;
+}
+
 /* Voyage styles moved to src/app/journey/voyage.css for code splitting */
