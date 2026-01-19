@@ -98,15 +98,20 @@ export default function AboutPage() {
                 <span className="text-gradient-cyber">SONALI</span>
               </h1>
 
-              <div className="space-y-1 text-lg font-mono mb-6">
-                <p><span className="text-magenta">Full-Stack Developer</span></p>
-                <p><span className="text-cyan">Problem Solver</span></p>
-                <p><span className="text-green">Code Craftsman</span></p>
+              <div className="space-y-0.5 text-sm font-mono mb-6">
+                <p className="text-text-muted">
+                  <span className="text-green">const</span> role <span className="text-magenta">=</span> <span className="text-cyan">{`"`}engineer{`"`}</span>;
+                </p>
+                <p className="text-text-muted">
+                  <span className="text-green">const</span> mode <span className="text-magenta">=</span> <span className="text-cyan">{`"`}build{`"`}</span>;
+                </p>
+                <p className="text-text-muted">
+                  <span className="text-green">const</span> status <span className="text-magenta">=</span> <span className="text-cyan">{`"`}shipping{`"`}</span>;
+                </p>
               </div>
 
-              <p className="text-text-muted font-mono text-sm leading-relaxed mb-8 max-w-md">
-                Based in Bengaluru, India. {totalYears} years of experience building
-                digital products that blend beautiful design with solid engineering.
+              <p className="text-text-muted font-mono text-xs leading-relaxed mb-8 max-w-sm">
+                <span className="text-magenta">//</span> {totalYears} years. Bengaluru. Building interfaces that work.
               </p>
 
               {/* Quick stats - inline */}
@@ -132,27 +137,24 @@ export default function AboutPage() {
                 <div className="terminal-dot terminal-dot-red" />
                 <div className="terminal-dot terminal-dot-yellow" />
                 <div className="terminal-dot terminal-dot-green" />
-                <span className="terminal-title">sonali@dev ~ /about</span>
+                <span className="terminal-title">~/.config/sonali</span>
               </div>
-              <div className="terminal-body text-sm">
+              <div className="terminal-body text-xs">
                 <div className="terminal-line">
                   <span className="terminal-prompt">$</span>
-                  <span className="terminal-command">cat profile.json</span>
+                  <span className="terminal-command">whoami --verbose</span>
                 </div>
-                <pre className="text-text-secondary font-mono mt-3 text-xs leading-relaxed">
-{`{
-  "name": "Sonali Sharma",
-  "role": "SDE III @ Glance",
-  "location": "Bengaluru 🇮🇳",
-  "experience": "${totalYears} years",
-  "focus": ["React", "TypeScript", "Node.js"],
-  "status": "Available for opportunities"
-}`}
-                </pre>
+                <div className="mt-3 space-y-1 font-mono">
+                  <p><span className="text-cyan">name:</span> <span className="text-text-secondary">Sonali Sharma</span></p>
+                  <p><span className="text-cyan">loc:</span> <span className="text-text-secondary">Bengaluru</span></p>
+                  <p><span className="text-cyan">role:</span> <span className="text-text-secondary">SDE III @ Glance</span></p>
+                  <p><span className="text-cyan">exp:</span> <span className="text-text-secondary">{totalYears} years</span></p>
+                  <p><span className="text-cyan">stack:</span> <span className="text-text-secondary">React, TS, Node</span></p>
+                </div>
                 <div className="mt-4 pt-3 border-t border-cyan/20">
                   <div className="flex items-center gap-2">
                     <span className="w-2 h-2 bg-green rounded-full animate-pulse" />
-                    <span className="text-green text-xs font-mono">OPEN TO WORK</span>
+                    <span className="text-green text-[10px] font-mono">OPEN_TO_WORK=true</span>
                   </div>
                 </div>
               </div>
