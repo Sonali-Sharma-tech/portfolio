@@ -57,19 +57,24 @@ function CRTOverlay() {
 // Smooth cursor glow that follows mouse
 function CursorGlow() {
   const glowRef = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Only show on devices with fine pointer (not touch)
     const hasPointer = window.matchMedia("(pointer: fine)").matches;
-    if (!hasPointer) return;
-
-    setIsVisible(true);
+    if (!hasPointer) {
+      // Hide the container if no pointer
+      if (containerRef.current) {
+        containerRef.current.style.display = "none";
+      }
+      return;
+    }
 
     let mouseX = 0;
     let mouseY = 0;
     let currentX = 0;
     let currentY = 0;
+    let animationId: number;
 
     const handleMouseMove = (e: MouseEvent) => {
       mouseX = e.clientX;
@@ -85,11 +90,11 @@ function CursorGlow() {
         glowRef.current.style.transform = `translate(${currentX - 150}px, ${currentY - 150}px)`;
       }
 
-      requestAnimationFrame(animate);
+      animationId = requestAnimationFrame(animate);
     };
 
     window.addEventListener("mousemove", handleMouseMove);
-    const animationId = requestAnimationFrame(animate);
+    animationId = requestAnimationFrame(animate);
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
@@ -97,9 +102,11 @@ function CursorGlow() {
     };
   }, []);
 
-  if (!isVisible) return null;
-
-  return <div ref={glowRef} className="cursor-glow-ambient" aria-hidden="true" />;
+  return (
+    <div ref={containerRef}>
+      <div ref={glowRef} className="cursor-glow-ambient" aria-hidden="true" />
+    </div>
+  );
 }
 
 // Glitch effect on interactive elements
