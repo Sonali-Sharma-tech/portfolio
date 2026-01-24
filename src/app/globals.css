@@ -1564,3 +1564,12 @@ a {
 }
 
 /* Voyage styles moved to src/app/journey/voyage.css for code splitting */
+
+/* Hide scrollbar utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
