@@ -50,7 +50,7 @@ export function Footer() {
               </svg>
             </Link>
             <Link
-              href="mailto:sonali.sharma110114@gmail.com"
+              href="mailto:sonalisharma.tech123@gmail.com"
               className="group relative p-2 text-magenta transition-all duration-300 hover:scale-125 hover:text-white"
               aria-label="Email"
             >
