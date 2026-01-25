@@ -113,13 +113,6 @@ export default function AboutPage() {
           <div className="h-px flex-1 bg-border" />
         </div>
         <AnimatedInterests interests={interests} />
-
-        {/* Fun footer */}
-        <div className="mt-12 text-center">
-          <p className="text-xs font-mono text-text-muted/50">
-            // Currently listening to lo-fi beats while debugging 🎧
-          </p>
-        </div>
       </section>
     </div>
   );
