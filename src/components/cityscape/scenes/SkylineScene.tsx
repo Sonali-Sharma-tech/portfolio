@@ -611,8 +611,8 @@ function CompletionOverlay({ progress }: { progress: number }) {
                 </span>
               </a>
 
-              <a
-                href="mailto:sonali.sharma@example.com"
+              <button
+                onClick={() => window.location.href = "mailto:sonalisharma.tech123@gmail.com"}
                 className="px-6 py-3 rounded-lg font-mono text-sm tracking-wider text-center transition-all duration-300 hover:scale-105"
                 style={{
                   background: "rgba(255,255,255,0.05)",
@@ -624,7 +624,7 @@ function CompletionOverlay({ progress }: { progress: number }) {
                   <EmailIcon />
                   SEND MESSAGE
                 </span>
-              </a>
+              </button>
             </motion.div>
 
             {/* Navigation */}

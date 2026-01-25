@@ -745,12 +745,15 @@ export default function ProjectsPage() {
                   {"// Let's build something amazing together"}
                 </p>
               </div>
-              <Link href="mailto:sonali.sharma110114@gmail.com" className="btn-cyber">
+              <button
+                onClick={() => window.location.href = "mailto:sonalisharma.tech123@gmail.com"}
+                className="btn-cyber"
+              >
                 <span>Get in Touch</span>
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
-              </Link>
+              </button>
             </div>
           </div>
         </div>
