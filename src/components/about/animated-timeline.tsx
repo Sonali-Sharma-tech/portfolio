@@ -21,11 +21,11 @@ export function AnimatedTimeline({ experience }: AnimatedTimelineProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start end", "end start"],
+    offset: ["start 80%", "end 20%"],
   });
 
   // Timeline line grows as you scroll
-  const lineHeight = useTransform(scrollYProgress, [0, 0.8], ["0%", "100%"]);
+  const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   return (
     <div ref={containerRef} className="relative">
@@ -55,7 +55,6 @@ export function AnimatedTimeline({ experience }: AnimatedTimelineProps) {
             <TimelineCard
               key={`${job.company}-${job.role}`}
               job={job}
-              index={idx}
               isLeft={isLeft}
             />
           );
@@ -96,11 +95,9 @@ export function AnimatedTimeline({ experience }: AnimatedTimelineProps) {
 
 function TimelineCard({
   job,
-  index,
   isLeft,
 }: {
   job: Job;
-  index: number;
   isLeft: boolean;
 }) {
   return (
