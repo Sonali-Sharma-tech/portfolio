@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { AnimatedTimeline } from "@/components/about/animated-timeline";
 import { AnimatedTerminal, AnimatedInterests } from "@/components/about/animated-sections";
 
@@ -68,24 +67,14 @@ export default function AboutPage() {
       <section className="container max-w-4xl mb-24">
         <p className="text-xs font-mono text-cyan mb-4 tracking-widest">ABOUT</p>
         <h1 className="text-3xl md:text-4xl font-display leading-tight mb-6">
-          I build things for the web.
+          I turn &apos;what if&apos; into &apos;wow&apos;.
         </h1>
         <p className="text-text-secondary text-lg max-w-2xl mb-6">
           Software engineer with 5+ years shipping products at scale.
           Currently at <span className="text-cyan">Glance</span>, building interfaces
           that reach millions.
         </p>
-        <div className="flex flex-wrap gap-4 text-sm">
-          <Link href="mailto:sonali.sharma110114@gmail.com" className="text-text-muted hover:text-cyan transition-colors">
-            Email ↗
-          </Link>
-          <Link href="https://github.com/Sonali-Sharma-tech" target="_blank" className="text-text-muted hover:text-cyan transition-colors">
-            GitHub ↗
-          </Link>
-          <Link href="https://linkedin.com/in/sonali-sharma110114" target="_blank" className="text-text-muted hover:text-cyan transition-colors">
-            LinkedIn ↗
-          </Link>
-        </div>
+      
       </section>
 
       {/* Career Timeline */}
