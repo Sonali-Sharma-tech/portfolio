@@ -76,35 +76,13 @@ export function AnimatedTerminal({ techStack }: AnimatedTerminalProps) {
               >
                 →
               </motion.span>
-              <motion.span
-                className="text-text-primary transition-colors"
-                whileHover={{
-                  color: "rgb(0, 255, 245)",
-                  textShadow: "0 0 10px rgba(0, 255, 245, 0.5)",
-                }}
-              >
+              <span className="text-text-primary">
                 {tech}
-              </motion.span>
+              </span>
             </motion.div>
           ))}
         </div>
 
-        <motion.div
-          className="mt-4 text-text-muted"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 1 }}
-        >
-          <span className="text-cyan">$</span>
-          <motion.span
-            className="ml-1 inline-block"
-            animate={{ opacity: [1, 0, 1] }}
-            transition={{ duration: 1, repeat: Infinity }}
-          >
-            ▊
-          </motion.span>
-        </motion.div>
       </div>
     </motion.div>
   );
