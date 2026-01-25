@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import { useRef } from "react";
 
 interface Job {
@@ -21,7 +21,7 @@ export function AnimatedTimeline({ experience }: AnimatedTimelineProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start 80%", "end 20%"],
+    offset: ["start 50%", "end 50%"],
   });
 
   // Timeline line grows as you scroll
@@ -30,7 +30,7 @@ export function AnimatedTimeline({ experience }: AnimatedTimelineProps) {
   return (
     <div ref={containerRef} className="relative">
       {/* Animated center line - Desktop */}
-      <div className="hidden md:block absolute left-1/2 top-0 bottom-0 -translate-x-1/2">
+      <div className="hidden md:block absolute left-1/2 top-0 bottom-[52px] -translate-x-1/2">
         <div className="w-px h-full bg-border/20" />
         <motion.div
           className="absolute top-0 left-0 w-px bg-gradient-to-b from-cyan via-magenta to-orange"
@@ -39,7 +39,7 @@ export function AnimatedTimeline({ experience }: AnimatedTimelineProps) {
       </div>
 
       {/* Animated left line - Mobile */}
-      <div className="md:hidden absolute left-3 top-0 bottom-0">
+      <div className="md:hidden absolute left-3 top-0 bottom-3">
         <div className="w-px h-full bg-border/20" />
         <motion.div
           className="absolute top-0 left-0 w-px bg-gradient-to-b from-cyan via-magenta to-orange"
@@ -61,35 +61,61 @@ export function AnimatedTimeline({ experience }: AnimatedTimelineProps) {
         })}
 
         {/* Origin marker */}
-        <motion.div
-          className="relative"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="md:hidden absolute left-0">
-            <motion.div
-              className="w-6 h-6 rounded-full border-2 border-dashed border-text-muted/30 bg-space-void flex items-center justify-center"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            >
-              <span className="text-[8px] font-mono text-text-muted">○</span>
-            </motion.div>
-          </div>
-          <div className="hidden md:flex absolute left-1/2 -translate-x-1/2">
-            <motion.div
-              className="w-4 h-4 rounded-full border-2 border-dashed border-text-muted/30 bg-space-void"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            />
-          </div>
-          <div className="pl-10 md:pl-0 md:text-center">
-            <span className="text-xs font-mono text-text-muted/50">The beginning</span>
-          </div>
-        </motion.div>
+        <div className="mt-8 md:mt-16">
+          <OriginMarker />
+        </div>
       </div>
     </div>
+  );
+}
+
+function OriginMarker() {
+  const ref = useRef<HTMLDivElement>(null);
+  // Bottom element can't reach viewport center, so trigger when it enters viewport
+  const isInView = useInView(ref, { once: true, margin: "0px 0px -20% 0px" });
+
+  return (
+    <motion.div
+      ref={ref}
+      className="relative"
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: 0.5 }}
+    >
+      {/* Mobile circle */}
+      <div className="md:hidden absolute left-0 top-0">
+        <motion.div
+          className={`w-6 h-6 rounded-full border-2 border-dashed flex items-center justify-center transition-all duration-500 ${
+            isInView
+              ? "border-cyan bg-cyan/20 shadow-[0_0_12px_rgba(0,255,245,0.6)]"
+              : "border-text-muted/30 bg-space-void"
+          }`}
+          animate={{ rotate: 360 }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        >
+          <span className={`text-[8px] font-mono transition-colors duration-500 ${isInView ? "text-cyan" : "text-text-muted"}`}>○</span>
+        </motion.div>
+      </div>
+      {/* Desktop circle */}
+      <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 top-0">
+        <motion.div
+          className={`w-4 h-4 rounded-full border-2 border-dashed transition-all duration-500 ${
+            isInView
+              ? "border-cyan bg-cyan/20 shadow-[0_0_12px_rgba(0,255,245,0.6)]"
+              : "border-text-muted/30 bg-space-void"
+          }`}
+          animate={{ rotate: 360 }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        />
+      </div>
+      {/* Label */}
+      <div className="pl-10 md:pl-0 md:pt-6 md:text-center">
+        <span className={`text-xs font-mono transition-colors duration-500 ${isInView ? "text-cyan" : "text-text-muted/50"}`}>
+          The beginning
+        </span>
+      </div>
+    </motion.div>
   );
 }
 
@@ -100,8 +126,13 @@ function TimelineCard({
   job: Job;
   isLeft: boolean;
 }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  // Node is "traversed" when it passes the center of the viewport - stays highlighted forever after
+  const isTraversed = useInView(cardRef, { once: true, margin: "-50% 0px -50% 0px" });
+
   return (
     <motion.div
+      ref={cardRef}
       className="relative"
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -121,15 +152,19 @@ function TimelineCard({
         transition={{ duration: 0.4, delay: 0.2, type: "spring", stiffness: 200 }}
       >
         <div
-          className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-            job.current
+          className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-500 ${
+            isTraversed
               ? "bg-cyan border-cyan shadow-[0_0_12px_rgba(0,255,245,0.6)]"
               : "bg-space-void border-border"
           }`}
         >
-          <span className="text-[8px] font-mono font-bold">{job.year.slice(-2)}</span>
+          <span className={`text-[8px] font-mono font-bold transition-colors duration-500 ${
+            isTraversed ? "text-space-void" : "text-text-muted"
+          }`}>
+            {job.year.slice(-2)}
+          </span>
         </div>
-        {job.current && (
+        {job.current && isTraversed && (
           <motion.span
             className="absolute inset-0 rounded-full bg-cyan"
             animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
@@ -147,13 +182,13 @@ function TimelineCard({
         transition={{ duration: 0.4, delay: 0.3, type: "spring", stiffness: 200 }}
       >
         <div
-          className={`w-5 h-5 rounded-full border-2 ${
-            job.current
+          className={`w-5 h-5 rounded-full border-2 transition-all duration-500 ${
+            isTraversed
               ? "bg-cyan border-cyan shadow-[0_0_20px_rgba(0,255,245,0.6)]"
               : "bg-space-void border-border"
           }`}
         />
-        {job.current && (
+        {job.current && isTraversed && (
           <motion.span
             className="absolute inset-0 rounded-full bg-cyan"
             animate={{ scale: [1, 2, 1], opacity: [0.5, 0, 0.5] }}
@@ -173,8 +208,8 @@ function TimelineCard({
         transition={{ duration: 0.5, delay: 0.2 }}
       >
         <motion.div
-          className={`relative border bg-space-surface/20 p-5 overflow-hidden group ${
-            job.current ? "border-cyan/40" : "border-border/30"
+          className={`relative border bg-space-surface/20 p-5 overflow-hidden group transition-all duration-500 ${
+            isTraversed ? "border-cyan/40" : "border-border/30"
           }`}
           whileHover={{
             y: -4,
