@@ -1,0 +1,98 @@
+---
+title: "React Server Components: The Complete Guide for 2025"
+excerpt: "Understanding RSC architecture, when to use Server vs Client Components, and how they're changing the way we build React applications."
+date: "2025-01-15"
+readingTime: "8 min read"
+tags: ["React", "Next.js", "Server Components"]
+---
+
+React Server Components (RSC) have fundamentally changed how we think about React applications. After using them extensively in production, here's everything you need to know.
+
+## What Are Server Components?
+
+Server Components are React components that render exclusively on the server. They never ship JavaScript to the client, resulting in smaller bundles and faster page loads.
+
+```tsx
+// This component runs ONLY on the server
+async function BlogPosts() {
+  const posts = await db.posts.findMany();
+  return (
+    <ul>
+      {posts.map(post => (
+        <li key={post.id}>{post.title}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+## Server vs Client Components
+
+The key mental model is simple:
+
+- **Server Components**: For data fetching, accessing backend resources, keeping sensitive info on server
+- **Client Components**: For interactivity, browser APIs, state, effects
+
+```tsx
+// Server Component (default in Next.js App Router)
+async function ProductPage({ id }: { id: string }) {
+  const product = await getProduct(id);
+  return <ProductDetails product={product} />;
+}
+
+// Client Component (add 'use client' directive)
+'use client';
+function AddToCartButton({ productId }: { productId: string }) {
+  const [loading, setLoading] = useState(false);
+  // ... client-side logic
+}
+```
+
+## The Composition Pattern
+
+The most powerful pattern is composing Server and Client components together:
+
+```tsx
+// Server Component
+async function Dashboard() {
+  const data = await fetchDashboardData();
+
+  return (
+    <div>
+      <ServerRenderedChart data={data.chart} />
+      <InteractiveFilters /> {/* Client Component */}
+      <DataTable rows={data.rows} />
+    </div>
+  );
+}
+```
+
+## Common Mistakes to Avoid
+
+1. **Don't pass functions as props to Client Components** - Functions can't be serialized
+2. **Don't use hooks in Server Components** - No useState, useEffect, etc.
+3. **Don't import Client Components into Server Components without careful consideration** - This can accidentally pull code to the client
+
+## Performance Benefits
+
+In our production apps, we've seen:
+
+- **40-60% reduction** in JavaScript bundle size
+- **2-3x faster** Time to Interactive (TTI)
+- **Better SEO** with server-rendered content
+
+## When to Use What
+
+Use **Server Components** for:
+- Data fetching
+- Accessing backend services
+- Rendering static or semi-static content
+- Large dependencies that shouldn't ship to client
+
+Use **Client Components** for:
+- onClick, onChange, onSubmit handlers
+- useState, useEffect, useReducer
+- Browser-only APIs (localStorage, geolocation)
+- Third-party libraries that need browser APIs
+
+The future of React is hybrid - embrace the composition model and you'll build faster, more efficient applications.

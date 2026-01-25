@@ -1,0 +1,172 @@
+---
+title: "React 19: New Hooks and Features You Should Know"
+excerpt: "Exploring the new hooks in React 19 including useActionState, useFormStatus, useOptimistic, and the new use() API."
+date: "2025-01-05"
+readingTime: "6 min read"
+tags: ["React", "Hooks", "React 19"]
+---
+
+React 19 introduces several new hooks that simplify common patterns. Let's explore each one with practical examples.
+
+## useActionState
+
+Replaces the old useFormState from react-dom. Handles form submission state elegantly:
+
+```tsx
+'use client';
+import { useActionState } from 'react';
+
+function SignupForm() {
+  const [state, formAction, isPending] = useActionState(
+    async (prevState, formData) => {
+      const email = formData.get('email');
+      const result = await signupUser(email);
+      return result;
+    },
+    null
+  );
+
+  return (
+    <form action={formAction}>
+      <input name="email" type="email" disabled={isPending} />
+      <button type="submit" disabled={isPending}>
+        {isPending ? 'Signing up...' : 'Sign Up'}
+      </button>
+      {state?.error && <p className="error">{state.error}</p>}
+    </form>
+  );
+}
+```
+
+## useFormStatus
+
+Access the pending state of a parent form from any child component:
+
+```tsx
+'use client';
+import { useFormStatus } from 'react-dom';
+
+function SubmitButton() {
+  const { pending, data, method } = useFormStatus();
+
+  return (
+    <button type="submit" disabled={pending}>
+      {pending ? 'Submitting...' : 'Submit'}
+    </button>
+  );
+}
+```
+
+## useOptimistic
+
+Show optimistic UI updates before server confirmation:
+
+```tsx
+'use client';
+import { useOptimistic } from 'react';
+
+function TodoList({ todos }: { todos: Todo[] }) {
+  const [optimisticTodos, addOptimisticTodo] = useOptimistic(
+    todos,
+    (state, newTodo: Todo) => [...state, newTodo]
+  );
+
+  async function handleAdd(formData: FormData) {
+    const newTodo = {
+      id: Date.now(),
+      text: formData.get('text'),
+      pending: true
+    };
+
+    addOptimisticTodo(newTodo);
+    await saveTodo(newTodo);
+  }
+
+  return (
+    <form action={handleAdd}>
+      <input name="text" />
+      <button type="submit">Add</button>
+      <ul>
+        {optimisticTodos.map(todo => (
+          <li key={todo.id} style={{ opacity: todo.pending ? 0.5 : 1 }}>
+            {todo.text}
+          </li>
+        ))}
+      </ul>
+    </form>
+  );
+}
+```
+
+## The use() API
+
+A new way to read resources in render, including promises and context:
+
+```tsx
+import { use } from 'react';
+
+function UserProfile({ userPromise }: { userPromise: Promise<User> }) {
+  const user = use(userPromise);
+
+  return <div>Hello, {user.name}!</div>;
+}
+
+// Also works with context
+function ThemeButton() {
+  const theme = use(ThemeContext);
+  return <button style={{ background: theme.primary }}>Click</button>;
+}
+```
+
+## Actions and Transitions
+
+React 19 formalizes the concept of Actions - async functions that trigger state updates:
+
+```tsx
+function UpdateName() {
+  const [name, setName] = useState('');
+  const [isPending, startTransition] = useTransition();
+
+  const handleSubmit = () => {
+    startTransition(async () => {
+      await updateNameOnServer(name);
+      // State updates after await are batched
+    });
+  };
+
+  return (
+    <>
+      <input value={name} onChange={e => setName(e.target.value)} />
+      <button onClick={handleSubmit} disabled={isPending}>
+        {isPending ? 'Updating...' : 'Update'}
+      </button>
+    </>
+  );
+}
+```
+
+## Document Metadata
+
+React 19 supports rendering metadata tags anywhere in your component tree:
+
+```tsx
+function BlogPost({ post }) {
+  return (
+    <article>
+      <title>{post.title}</title>
+      <meta name="description" content={post.excerpt} />
+      <h1>{post.title}</h1>
+      <p>{post.content}</p>
+    </article>
+  );
+}
+```
+
+## Migration Tips
+
+1. **Update react and react-dom** to version 19
+2. **Replace useFormState** with useActionState
+3. **Test async transitions** thoroughly
+4. **Leverage Server Components** where possible
+
+React 19 makes async patterns first-class citizens. Embrace these new primitives to write cleaner, more performant code.

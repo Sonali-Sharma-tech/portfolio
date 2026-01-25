@@ -1,0 +1,187 @@
+---
+title: "Building AI-Powered Features in React Applications"
+excerpt: "A hands-on guide to integrating AI capabilities into your React apps using OpenAI, Anthropic Claude, and the Vercel AI SDK."
+date: "2024-12-28"
+readingTime: "9 min read"
+tags: ["AI", "React", "Vercel AI SDK"]
+---
+
+Adding AI features to your React application has never been easier. Here's how to build intelligent features using modern tools and best practices.
+
+## Setting Up the Vercel AI SDK
+
+The Vercel AI SDK provides React hooks for streaming AI responses:
+
+```bash
+npm install ai @ai-sdk/openai @ai-sdk/anthropic
+```
+
+## Basic Chat Implementation
+
+```tsx
+'use client';
+import { useChat } from 'ai/react';
+
+function ChatInterface() {
+  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
+    api: '/api/chat',
+  });
+
+  return (
+    <div className="chat-container">
+      <div className="messages">
+        {messages.map(m => (
+          <div key={m.id} className={m.role === 'user' ? 'user' : 'ai'}>
+            {m.content}
+          </div>
+        ))}
+      </div>
+
+      <form onSubmit={handleSubmit}>
+        <input
+          value={input}
+          onChange={handleInputChange}
+          placeholder="Ask anything..."
+          disabled={isLoading}
+        />
+        <button type="submit" disabled={isLoading}>
+          Send
+        </button>
+      </form>
+    </div>
+  );
+}
+```
+
+## API Route with Streaming
+
+```ts
+// app/api/chat/route.ts
+import { anthropic } from '@ai-sdk/anthropic';
+import { streamText } from 'ai';
+
+export async function POST(req: Request) {
+  const { messages } = await req.json();
+
+  const result = streamText({
+    model: anthropic('claude-3-5-sonnet-20241022'),
+    messages,
+    system: 'You are a helpful assistant.',
+  });
+
+  return result.toDataStreamResponse();
+}
+```
+
+## Building an AI Writing Assistant
+
+Here's a more practical example - an AI-powered content editor:
+
+```tsx
+'use client';
+import { useCompletion } from 'ai/react';
+
+function WritingAssistant() {
+  const { completion, input, setInput, complete, isLoading } = useCompletion({
+    api: '/api/improve-writing',
+  });
+
+  const improveText = async () => {
+    await complete(input);
+  };
+
+  return (
+    <div className="editor">
+      <textarea
+        value={input}
+        onChange={e => setInput(e.target.value)}
+        placeholder="Paste your text here..."
+        rows={10}
+      />
+
+      <div className="actions">
+        <button onClick={improveText} disabled={isLoading}>
+          ✨ Improve Writing
+        </button>
+        <button onClick={() => complete(input, {
+          body: { action: 'summarize' }
+        })}>
+          📝 Summarize
+        </button>
+        <button onClick={() => complete(input, {
+          body: { action: 'fix-grammar' }
+        })}>
+          🔧 Fix Grammar
+        </button>
+      </div>
+
+      {completion && (
+        <div className="result">
+          <h3>Improved Version:</h3>
+          <p>{completion}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+## Semantic Search with Embeddings
+
+Build intelligent search using vector embeddings:
+
+```tsx
+async function semanticSearch(query: string) {
+  // Generate embedding for the query
+  const { embedding } = await embed({
+    model: openai.embedding('text-embedding-3-small'),
+    value: query,
+  });
+
+  // Search your vector database
+  const results = await vectorDB.search({
+    vector: embedding,
+    topK: 5,
+  });
+
+  return results;
+}
+
+function SearchWithAI() {
+  const [results, setResults] = useState([]);
+
+  const handleSearch = async (query: string) => {
+    const matches = await semanticSearch(query);
+    setResults(matches);
+  };
+
+  return (
+    <div>
+      <input
+        onChange={e => handleSearch(e.target.value)}
+        placeholder="Search naturally..."
+      />
+      <ul>
+        {results.map(r => <li key={r.id}>{r.title}</li>)}
+      </ul>
+    </div>
+  );
+}
+```
+
+## Best Practices
+
+1. **Stream responses** - Always stream for better UX
+2. **Handle errors gracefully** - AI APIs can fail
+3. **Implement rate limiting** - Protect your API costs
+4. **Cache when possible** - Avoid redundant API calls
+5. **Provide loading states** - Users should know AI is thinking
+
+## Cost Optimization
+
+- Use smaller models for simple tasks
+- Implement response caching
+- Set token limits appropriately
+- Consider on-device models for simple classification
+
+AI features can transform your application's user experience. Start small, measure impact, and iterate based on user feedback.
