@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 /* ============================================
    CYBERPUNK SPACE TERMINAL PORTFOLIO
@@ -1572,4 +1573,10 @@ a {
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* Force white text in code blocks (override syntax highlighting) */
+.prose pre code,
+.prose pre code * {
+  color: white !important;
 }
