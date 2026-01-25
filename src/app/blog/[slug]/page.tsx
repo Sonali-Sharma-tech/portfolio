@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getPostBySlug, getAllPosts, formatDate } from "@/lib/posts";
+import { blogSource, type BlogPage } from "@/lib/source";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -9,44 +9,61 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = blogSource.getPage([slug]) as BlogPage | undefined;
 
   if (!post) {
     return { title: "Post Not Found" };
   }
 
   return {
-    title: `${post.title} | SONALI.SH`,
-    description: post.excerpt,
+    title: `${post.data.title} | SONALI.SH`,
+    description: post.data.excerpt,
   };
 }
 
 export async function generateStaticParams() {
-  const posts = getAllPosts();
+  const posts = blogSource.getPages();
   return posts.map((post) => ({
-    slug: post.slug,
+    slug: post.slugs[0],
   }));
+}
+
+function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 }
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
-  const allPosts = getAllPosts();
-  const currentIndex = allPosts.findIndex((p) => p.slug === slug);
-  const prevPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
-  const nextPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
+  const post = blogSource.getPage([slug]) as BlogPage | undefined;
 
   if (!post) {
     notFound();
   }
 
+  const allPosts = (blogSource.getPages() as BlogPage[]).sort((a, b) => {
+    const dateA = new Date(a.data.date).getTime();
+    const dateB = new Date(b.data.date).getTime();
+    return dateB - dateA;
+  });
+
+  const currentIndex = allPosts.findIndex((p) => p.slugs[0] === slug);
+  const prevPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
+  const nextPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
+
+  const MDXContent = post.data.body;
+
   return (
-    <article className="py-12 md:py-20">
+    <article className="py-8 md:py-12">
       <div className="container max-w-3xl">
         {/* Back Link */}
         <Link
           href="/blog"
-          className="inline-flex items-center gap-2 text-text-muted hover:text-cyan transition-colors text-sm font-mono mb-12"
+          className="inline-flex items-center gap-2 text-text-muted hover:text-cyan transition-colors text-sm font-mono mb-6"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -55,26 +72,26 @@ export default async function BlogPostPage({ params }: Props) {
         </Link>
 
         {/* Article Header */}
-        <header className="mb-12 pb-10 border-b border-border/30">
+        <header className="mb-8 pb-6 border-b border-border/30">
           {/* Meta */}
-          <div className="flex flex-wrap items-center gap-4 mb-6 text-sm font-mono text-text-muted">
-            <time dateTime={post.date}>{formatDate(post.date)}</time>
+          <div className="flex flex-wrap items-center gap-3 mb-3 text-xs font-mono text-text-muted">
+            <time dateTime={post.data.date}>{formatDate(post.data.date)}</time>
             <span className="w-1 h-1 bg-magenta rounded-full" />
-            <span>{post.readingTime}</span>
+            <span>{post.data.readingTime}</span>
           </div>
 
           {/* Title */}
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-display leading-tight mb-6 text-text-primary">
-            {post.title}
+          <h1 className="text-[20px] font-display leading-tight mb-4 text-text-primary">
+            {post.data.title}
           </h1>
 
           {/* Tags */}
-          {post.tags && (
-            <div className="flex flex-wrap gap-3">
-              {post.tags.map((tag) => (
+          {post.data.tags && (
+            <div className="flex flex-wrap gap-2">
+              {post.data.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="px-3 py-1 text-xs font-mono text-magenta border border-magenta/30 bg-magenta/5"
+                  className="px-2 py-0.5 text-xs font-mono text-magenta border border-magenta/30 bg-magenta/5"
                 >
                   {tag}
                 </span>
@@ -84,116 +101,8 @@ export default async function BlogPostPage({ params }: Props) {
         </header>
 
         {/* Article Content */}
-        <div className="prose-custom">
-          {post.content.split("\n\n").map((paragraph, index) => {
-            // Handle h2 headings
-            if (paragraph.startsWith("## ")) {
-              return (
-                <h2 key={index} className="text-2xl md:text-3xl font-display text-cyan mt-14 mb-5">
-                  {paragraph.replace("## ", "")}
-                </h2>
-              );
-            }
-
-            // Handle h3 headings
-            if (paragraph.startsWith("### ")) {
-              return (
-                <h3 key={index} className="text-xl font-display text-text-primary mt-10 mb-4">
-                  {paragraph.replace("### ", "")}
-                </h3>
-              );
-            }
-
-            // Handle code blocks
-            if (paragraph.startsWith("```")) {
-              const lines = paragraph.split("\n");
-              const language = lines[0].replace("```", "");
-              const code = lines.slice(1, -1).join("\n");
-              return (
-                <div key={index} className="my-8">
-                  <div className="flex items-center justify-between px-4 py-2 bg-space-deep border border-cyan/20 border-b-0">
-                    <span className="text-xs font-mono text-cyan uppercase tracking-wide">
-                      {language || "code"}
-                    </span>
-                  </div>
-                  <pre className="bg-space-deep border border-cyan/20 p-5 overflow-x-auto">
-                    <code className="text-sm text-green font-mono leading-relaxed">{code}</code>
-                  </pre>
-                </div>
-              );
-            }
-
-            // Handle numbered lists
-            if (/^\d+\./.test(paragraph)) {
-              const items = paragraph.split("\n").filter(Boolean);
-              return (
-                <ol key={index} className="my-6 space-y-3 pl-6">
-                  {items.map((item, i) => (
-                    <li key={i} className="text-text-secondary leading-relaxed flex gap-3">
-                      <span className="text-cyan font-mono flex-shrink-0">{i + 1}.</span>
-                      <span>{item.replace(/^\d+\.\s*/, "")}</span>
-                    </li>
-                  ))}
-                </ol>
-              );
-            }
-
-            // Handle bullet lists
-            if (paragraph.startsWith("- ") || paragraph.startsWith("* ")) {
-              const items = paragraph.split("\n").filter(Boolean);
-              return (
-                <ul key={index} className="my-6 space-y-3 pl-6">
-                  {items.map((item, i) => (
-                    <li key={i} className="text-text-secondary leading-relaxed flex gap-3">
-                      <span className="text-magenta flex-shrink-0">→</span>
-                      <span>{item.replace(/^[-*]\s*/, "")}</span>
-                    </li>
-                  ))}
-                </ul>
-              );
-            }
-
-            // Handle inline code and bold
-            if (paragraph.includes("`") || paragraph.includes("**")) {
-              const processText = (text: string) => {
-                const parts = text.split(/(`[^`]+`|\*\*[^*]+\*\*)/g);
-                return parts.map((part, i) => {
-                  if (part.startsWith("`") && part.endsWith("`")) {
-                    return (
-                      <code key={i} className="px-2 py-1 bg-cyan/10 text-cyan text-[0.9em] font-mono rounded">
-                        {part.slice(1, -1)}
-                      </code>
-                    );
-                  }
-                  if (part.startsWith("**") && part.endsWith("**")) {
-                    return (
-                      <strong key={i} className="text-text-primary font-semibold">
-                        {part.slice(2, -2)}
-                      </strong>
-                    );
-                  }
-                  return part;
-                });
-              };
-
-              return (
-                <p key={index} className="my-5 text-text-secondary text-lg leading-relaxed">
-                  {processText(paragraph)}
-                </p>
-              );
-            }
-
-            // Regular paragraphs
-            if (paragraph.trim()) {
-              return (
-                <p key={index} className="my-5 text-text-secondary text-lg leading-relaxed">
-                  {paragraph}
-                </p>
-              );
-            }
-
-            return null;
-          })}
+        <div className="prose prose-invert prose-cyan max-w-none prose-headings:font-display prose-headings:text-cyan prose-h2:text-2xl prose-h2:md:text-3xl prose-h2:mt-14 prose-h2:mb-5 prose-h3:text-xl prose-h3:text-text-primary prose-h3:mt-10 prose-h3:mb-4 prose-p:text-text-secondary prose-p:text-lg prose-p:leading-relaxed prose-a:text-cyan prose-a:no-underline hover:prose-a:underline prose-strong:text-text-primary prose-code:text-cyan prose-code:bg-cyan/10 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:before:content-none prose-code:after:content-none prose-pre:bg-space-deep prose-pre:border prose-pre:border-cyan/20 [&_pre_code]:text-white [&_pre_code]:bg-transparent prose-li:text-text-secondary prose-ul:my-6 prose-ol:my-6">
+          <MDXContent />
         </div>
 
         {/* Article Footer */}
@@ -203,7 +112,7 @@ export default async function BlogPostPage({ params }: Props) {
             <span className="text-sm text-text-muted font-mono">Share this article</span>
             <div className="flex items-center gap-4">
               <a
-                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://sonali.sh/blog/${post.slug}`)}`}
+                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.data.title)}&url=${encodeURIComponent(`https://sonali.sh/blog/${slug}`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 border border-border flex items-center justify-center hover:border-cyan hover:text-cyan transition-colors"
@@ -214,7 +123,7 @@ export default async function BlogPostPage({ params }: Props) {
                 </svg>
               </a>
               <a
-                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://sonali.sh/blog/${post.slug}`)}`}
+                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://sonali.sh/blog/${slug}`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 border border-border flex items-center justify-center hover:border-cyan hover:text-cyan transition-colors"
@@ -231,12 +140,12 @@ export default async function BlogPostPage({ params }: Props) {
           <div className="grid md:grid-cols-2 gap-6">
             {prevPost ? (
               <Link
-                href={`/blog/${prevPost.slug}`}
+                href={prevPost.url}
                 className="group p-6 border border-border/30 hover:border-cyan/50 transition-colors"
               >
                 <span className="text-xs font-mono text-text-muted mb-2 block">Previous Article</span>
                 <span className="text-lg font-display text-text-primary group-hover:text-cyan transition-colors line-clamp-2">
-                  {prevPost.title}
+                  {prevPost.data.title}
                 </span>
               </Link>
             ) : (
@@ -245,12 +154,12 @@ export default async function BlogPostPage({ params }: Props) {
 
             {nextPost ? (
               <Link
-                href={`/blog/${nextPost.slug}`}
+                href={nextPost.url}
                 className="group p-6 border border-border/30 hover:border-cyan/50 transition-colors md:text-right"
               >
                 <span className="text-xs font-mono text-text-muted mb-2 block">Next Article</span>
                 <span className="text-lg font-display text-text-primary group-hover:text-cyan transition-colors line-clamp-2">
-                  {nextPost.title}
+                  {nextPost.data.title}
                 </span>
               </Link>
             ) : (

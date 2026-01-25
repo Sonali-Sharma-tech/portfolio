@@ -1,12 +1,23 @@
 import Link from "next/link";
 import { getFeaturedProjects } from "@/lib/projects";
-import { getAllPosts, formatDate } from "@/lib/posts";
+import { blogSource, type BlogPage } from "@/lib/source";
 import { TerminalHero } from "@/components/sections/terminal-hero";
 import { SkillBars } from "@/components/sections/skill-bars";
 
+function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
 export default function Home() {
   const featuredProjects = getFeaturedProjects().slice(0, 3);
-  const recentPosts = getAllPosts().slice(0, 3);
+  const recentPosts = (blogSource.getPages() as BlogPage[])
+    .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+    .slice(0, 3);
 
   return (
     <>
@@ -209,13 +220,13 @@ export default function Home() {
           <div className="grid gap-6 max-w-5xl">
             {recentPosts.map((post, index) => (
               <article
-                key={post.slug}
+                key={post.slugs[0]}
                 className={`group ${
                   index % 2 === 0 ? "scroll-slide-left" : "scroll-slide-right"
                 }`}
               >
                 <Link
-                  href={`/blog/${post.slug}`}
+                  href={post.url}
                   className="transmission-card block relative overflow-hidden rounded-2xl border border-cyan/20 bg-gradient-to-br from-space-deep/80 to-space-void/90 backdrop-blur-xl p-6 md:p-8 transition-all duration-500 hover:border-cyan/50 hover:shadow-[0_0_40px_rgba(0,255,245,0.15),inset_0_0_60px_rgba(0,255,245,0.03)] hover:-translate-y-1"
                 >
                   {/* Shimmer effect */}
@@ -232,28 +243,28 @@ export default function Home() {
                         {String(index + 1).padStart(2, "0")}
                       </div>
                       <time
-                        dateTime={post.date}
+                        dateTime={post.data.date}
                         className="text-xs font-mono text-green tracking-wider flex items-center gap-2"
                       >
                         <span className="w-1.5 h-1.5 bg-green rounded-full" />
-                        {formatDate(post.date)}
+                        {formatDate(post.data.date)}
                       </time>
                     </div>
 
                     {/* Center: Content */}
                     <div className="flex-1">
                       <h3 className="text-xl md:text-2xl font-display mb-3 text-text-primary group-hover:text-cyan transition-all duration-300 group-hover:translate-x-2">
-                        {post.title}
+                        {post.data.title}
                       </h3>
                       <p className="text-text-secondary text-sm font-mono leading-relaxed line-clamp-2">
-                        {post.excerpt}
+                        {post.data.excerpt}
                       </p>
                     </div>
 
                     {/* Right: Reading time & arrow */}
                     <div className="flex md:flex-col items-center md:items-end gap-4 flex-shrink-0">
                       <span className="px-3 py-1 text-xs font-mono text-cyan/70 border border-cyan/20 rounded-full group-hover:border-cyan/50 group-hover:bg-cyan/10 transition-all">
-                        {post.readingTime}
+                        {post.data.readingTime}
                       </span>
                       <div className="w-10 h-10 rounded-xl border border-border flex items-center justify-center group-hover:border-cyan group-hover:bg-cyan group-hover:shadow-[0_0_20px_rgba(0,255,245,0.4)] transition-all duration-300">
                         <svg

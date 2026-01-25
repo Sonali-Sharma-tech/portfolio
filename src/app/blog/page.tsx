@@ -1,14 +1,28 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getAllPosts, formatDate } from "@/lib/posts";
+import { blogSource, type BlogPage } from "@/lib/source";
 
 export const metadata: Metadata = {
   title: "Blog | SONALI.SH",
-  description: "Articles on web development, React, TypeScript, and software engineering best practices.",
+  description:
+    "Articles on web development, React, TypeScript, and software engineering best practices.",
 };
 
+function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
 export default function BlogPage() {
-  const posts = getAllPosts();
+  const posts = (blogSource.getPages() as BlogPage[]).sort((a, b) => {
+    const dateA = new Date(a.data.date).getTime();
+    const dateB = new Date(b.data.date).getTime();
+    return dateB - dateA;
+  });
 
   return (
     <section className="py-16 md:py-24">
@@ -24,27 +38,25 @@ export default function BlogPage() {
         {/* Articles List */}
         <div className="space-y-8">
           {posts.map((post) => (
-            <Link
-              key={post.slug}
-              href={`/blog/${post.slug}`}
-              className="group block"
-            >
+            <Link key={post.slugs.join("/")} href={post.url} className="group block">
               <article className="py-4 border-b border-border/20 hover:border-cyan/30 transition-colors">
                 {/* Meta */}
                 <div className="flex items-center gap-3 mb-2 text-xs font-mono text-text-muted">
-                  <time dateTime={post.date}>{formatDate(post.date)}</time>
+                  <time dateTime={post.data.date}>
+                    {formatDate(post.data.date)}
+                  </time>
                   <span>·</span>
-                  <span>{post.readingTime}</span>
+                  <span>{post.data.readingTime}</span>
                 </div>
 
                 {/* Title */}
                 <h2 className="text-xs md:text-sm font-medium text-text-primary group-hover:text-cyan transition-colors mb-1">
-                  {post.title}
+                  {post.data.title}
                 </h2>
 
                 {/* Excerpt */}
                 <p className="text-sm text-text-secondary line-clamp-2">
-                  {post.excerpt}
+                  {post.data.excerpt}
                 </p>
               </article>
             </Link>
