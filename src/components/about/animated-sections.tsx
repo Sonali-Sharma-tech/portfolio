@@ -176,7 +176,7 @@ export function AnimatedInterests({ interests }: AnimatedInterestsProps) {
 
             <motion.span
               className="text-4xl mb-3 block relative z-10"
-              whileHover={{ scale: 1.3, rotate: [0, -10, 10, 0] }}
+              whileHover={{ scale: 1.2, rotate: 5 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
               {interest.icon}
