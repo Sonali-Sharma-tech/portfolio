@@ -99,7 +99,7 @@ export function HyperspaceJourney({ isActive, onComplete, targetPath = '/project
   const router = useRouter();
   const [currentWaypoint, setCurrentWaypoint] = useState(0);
   const [phase, setPhase] = useState<'idle' | 'launch' | 'warp' | 'travel' | 'arrive' | 'complete'>('idle');
-  const [warpLines, setWarpLines] = useState<Array<{ id: number; left: string; delay: string; duration: string }>>([]);
+  const [warpLines, setWarpLines] = useState<Array<{ id: number; left: string; delay: string; duration: string; width: string }>>([]);
   const [countdown, setCountdown] = useState(3);
   const [showStats, setShowStats] = useState(false);
 
@@ -113,6 +113,7 @@ export function HyperspaceJourney({ isActive, onComplete, targetPath = '/project
           left: `${Math.random() * 100}%`,
           delay: `${Math.random() * 0.5}s`,
           duration: `${0.3 + Math.random() * 0.5}s`,
+          width: `${50 + Math.random() * 150}px`,
         });
       }
       setWarpLines(lines);
@@ -229,7 +230,7 @@ export function HyperspaceJourney({ isActive, onComplete, targetPath = '/project
                 left: line.left,
                 animationDelay: line.delay,
                 animationDuration: line.duration,
-                width: `${50 + Math.random() * 150}px`,
+                width: line.width,
               }}
             />
           ))}
