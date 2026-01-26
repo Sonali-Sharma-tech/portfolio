@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import Link from "next/link";
 import { getFeaturedProjects } from "@/lib/projects";
 import { blogSource, type BlogPage } from "@/lib/source";
@@ -28,34 +29,21 @@ export default function Home() {
       <TerminalHero />
 
       {/* Skills marquee */}
-      <div className="marquee">
-        <div className="marquee-content">
-          <span className="text-cyan">REACT</span>
-          <span className="text-magenta">◆</span>
-          <span className="text-green">TYPESCRIPT</span>
-          <span className="text-magenta">◆</span>
-          <span className="text-cyan">NEXT.JS</span>
-          <span className="text-magenta">◆</span>
-          <span className="text-green">NODE.JS</span>
-          <span className="text-magenta">◆</span>
-          <span className="text-cyan">GRAPHQL</span>
-          <span className="text-magenta">◆</span>
-          <span className="text-green">TAILWIND</span>
-          <span className="text-magenta">◆</span>
-          <span className="text-cyan">MONGODB</span>
-          <span className="text-magenta">◆</span>
-          <span className="text-green">POSTGRESQL</span>
-          <span className="text-magenta">◆</span>
-          <span className="text-cyan">REACT</span>
-          <span className="text-magenta">◆</span>
-          <span className="text-green">TYPESCRIPT</span>
-          <span className="text-magenta">◆</span>
-          <span className="text-cyan">NEXT.JS</span>
-          <span className="text-magenta">◆</span>
-          <span className="text-green">NODE.JS</span>
-          <span className="text-magenta">◆</span>
-        </div>
-      </div>
+      {(() => {
+        const techStack = ["REACT", "TYPESCRIPT", "NEXT.JS", "NODE.JS", "GRAPHQL", "TAILWIND", "MONGODB", "POSTGRESQL"];
+        return (
+          <div className="marquee">
+            <div className="marquee-content">
+              {[...techStack, ...techStack].map((tech, i) => (
+                <Fragment key={i}>
+                  <span className={i % 2 === 0 ? "text-cyan" : "text-green"}>{tech}</span>
+                  <span className="text-magenta">◆</span>
+                </Fragment>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* ========================================
           PROJECTS - Holographic Cards
