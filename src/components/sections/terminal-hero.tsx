@@ -283,18 +283,27 @@ export function TerminalHero() {
                     />
                   )}
 
-                  {/* CTA Buttons */}
+                  {/* CTA Buttons - Glassmorphism */}
                   <div className={`mt-10 flex flex-wrap gap-4 transition-all duration-700 ${
                     showCTA ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
                   }`}>
-                    <Link href="/journey" className="btn-cyber group">
-                      <span className="relative z-10">🚀 LAUNCH VOYAGE</span>
+                    <Link href="/journey" className="btn-glass btn-glass-lg group">
+                      <span>🚀 LAUNCH VOYAGE</span>
+                      <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      </svg>
                     </Link>
-                    <Link href="/projects" className="btn-ghost-cyber">
-                      EXPLORE_MISSIONS
+                    <Link href="/projects" className="btn-glass-ghost group">
+                      <svg className="w-4 h-4 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                      </svg>
+                      <span>EXPLORE_MISSIONS</span>
                     </Link>
-                    <Link href="/about" className="btn-ghost-cyber">
-                      PILOT_PROFILE
+                    <Link href="/about" className="btn-glass-ghost group">
+                      <svg className="w-4 h-4 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      <span>PILOT_PROFILE</span>
                     </Link>
                   </div>
                 </div>
