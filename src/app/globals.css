@@ -690,6 +690,136 @@ h3 {
 }
 
 /* ============================================
+   GLASSMORPHISM BUTTONS
+   Modern frosted glass effect with micro-interactions
+   ============================================ */
+
+/* Base styles for all glass buttons */
+.btn-glass,
+.btn-glass-magenta,
+.btn-glass-ghost {
+  appearance: none;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0.75rem 1.5rem;
+  font-family: var(--font-fira), monospace;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+/* Primary glass button - Cyan */
+.btn-glass {
+  background: rgba(0, 255, 245, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 255, 245, 0.25);
+  color: var(--neon-cyan);
+  box-shadow:
+    0 4px 20px rgba(0, 255, 245, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.btn-glass:hover {
+  background: rgba(0, 255, 245, 0.18);
+  border-color: rgba(0, 255, 245, 0.5);
+  box-shadow:
+    0 8px 32px rgba(0, 255, 245, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.btn-glass:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(0, 255, 245, 0.15);
+}
+
+/* Magenta variant */
+.btn-glass-magenta {
+  background: rgba(255, 68, 170, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 68, 170, 0.25);
+  color: var(--neon-magenta);
+  box-shadow:
+    0 4px 20px rgba(255, 68, 170, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.btn-glass-magenta:hover {
+  background: rgba(255, 68, 170, 0.18);
+  border-color: rgba(255, 68, 170, 0.5);
+  box-shadow:
+    0 8px 32px rgba(255, 68, 170, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.btn-glass-magenta:active {
+  transform: translateY(0);
+}
+
+/* Ghost variant - subtle, secondary actions */
+.btn-glass-ghost {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  box-shadow: none;
+}
+
+.btn-glass-ghost:hover {
+  background: rgba(0, 255, 245, 0.08);
+  border-color: rgba(0, 255, 245, 0.3);
+  color: var(--neon-cyan);
+  box-shadow: 0 4px 20px rgba(0, 255, 245, 0.1);
+  transform: translateY(-2px);
+}
+
+.btn-glass-ghost:active {
+  transform: translateY(0);
+}
+
+/* Large size variant */
+.btn-glass-lg {
+  min-height: 3rem;
+  padding: 0.875rem 2rem;
+  font-size: 0.9375rem;
+}
+
+/* Focus states for accessibility */
+.btn-glass:focus-visible,
+.btn-glass-magenta:focus-visible,
+.btn-glass-ghost:focus-visible {
+  outline: 2px solid var(--neon-cyan);
+  outline-offset: 2px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .btn-glass,
+  .btn-glass-magenta,
+  .btn-glass-ghost {
+    transition: none;
+  }
+  .btn-glass:hover,
+  .btn-glass-magenta:hover,
+  .btn-glass-ghost:hover {
+    transform: none;
+  }
+}
+
+/* ============================================
    PROJECT CARDS - Neomorphism + Glassmorphism
    ============================================ */
 

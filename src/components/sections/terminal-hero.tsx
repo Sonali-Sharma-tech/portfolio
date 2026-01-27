@@ -3,6 +3,72 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
+// ==========================================
+// TERMINAL TYPING ANIMATION COMPONENT
+// Character-by-character reveal with cursor
+// ==========================================
+function TerminalTyping({
+  text,
+  delay = 0,
+  speed = 50,
+  className = "",
+  cursorClassName = "bg-cyan",
+  onComplete,
+}: {
+  text: string;
+  delay?: number;
+  speed?: number;
+  className?: string;
+  cursorClassName?: string;
+  onComplete?: () => void;
+}) {
+  const [displayText, setDisplayText] = useState("");
+  const [showCursor, setShowCursor] = useState(true);
+  const [isComplete, setIsComplete] = useState(false);
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    let charIndex = 0;
+
+    const typeChar = () => {
+      if (charIndex < text.length) {
+        setDisplayText(text.slice(0, charIndex + 1));
+        charIndex++;
+        // Variable speed: faster for spaces, adds slight randomness
+        const charSpeed = text[charIndex - 1] === " " ? speed * 0.3 : speed + Math.random() * 20;
+        timeout = setTimeout(typeChar, charSpeed);
+      } else {
+        setIsComplete(true);
+        onComplete?.();
+      }
+    };
+
+    timeout = setTimeout(typeChar, delay);
+    return () => clearTimeout(timeout);
+  }, [text, delay, speed, onComplete]);
+
+  // Cursor blink effect
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShowCursor(prev => !prev);
+    }, 530);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <span className={className}>
+      {displayText}
+      {!isComplete && (
+        <span
+          className={`inline-block w-[3px] h-[0.9em] ml-1 align-middle transition-opacity ${cursorClassName} ${
+            showCursor ? "opacity-100" : "opacity-0"
+          }`}
+        />
+      )}
+    </span>
+  );
+}
+
 // Boot sequence phases for a spacecraft terminal
 const bootSequence = [
   { phase: 'init', lines: ['INITIALIZING NEURAL INTERFACE...', 'ESTABLISHING QUANTUM LINK...'] },
@@ -106,8 +172,12 @@ export function TerminalHero() {
 
     if (visibleLines < terminalLines.length) {
       const line = terminalLines[visibleLines];
+
+      // Delays - longer for typed content to allow animation to complete
       const delay = line.type === 'divider' ? 100 :
-                    line.type === 'name' || line.type === 'role' ? 400 :
+                    line.type === 'name' ? 1600 :    // Wait for name typing (13 chars × ~80ms)
+                    line.type === 'role' ? 1400 :    // Wait for role typing (18 chars × ~60ms)
+                    line.type === 'mission' ? 1800 : // Wait for mission typing
                     line.type === 'skills' ? 300 : 200;
 
       const timeout = setTimeout(() => {
@@ -171,19 +241,32 @@ export function TerminalHero() {
             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold tracking-tight glitch-text"
             data-text={line.text}
           >
-            <span className="text-gradient-cyber">{line.text}</span>
+            <TerminalTyping
+              text={line.text}
+              speed={80}
+              className="text-gradient-cyber"
+              cursorClassName="bg-cyan"
+            />
           </div>
         );
       case 'role':
         return (
           <div key={index} className="text-xl sm:text-2xl md:text-3xl font-display text-white/60 mb-2">
-            {line.text}
+            <TerminalTyping
+              text={line.text}
+              speed={60}
+              cursorClassName="bg-white/60"
+            />
           </div>
         );
       case 'mission':
         return (
           <div key={index} className="text-text-secondary text-sm sm:text-base max-w-md">
-            {line.text}
+            <TerminalTyping
+              text={line.text}
+              speed={35}
+              cursorClassName="bg-text-secondary"
+            />
           </div>
         );
       case 'divider':
