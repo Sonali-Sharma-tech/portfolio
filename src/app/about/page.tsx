@@ -80,25 +80,25 @@ export default function AboutPage() {
       {/* Career Timeline */}
       <section className="container max-w-4xl mb-24">
         <div className="flex items-baseline gap-4 mb-12">
-          <h2 className="text-2xl font-display">Career Journey</h2>
+          <h2 className="text-xl font-display">Career Journey</h2>
           <div className="h-px flex-1 bg-border" />
         </div>
         <AnimatedTimeline experience={experience} />
       </section>
 
       {/* Tech Stack */}
-      <section className="container max-w-4xl mb-24">
+      <section className="container max-w-4xl mb-32">
         <div className="flex items-baseline gap-4 mb-8">
-          <h2 className="text-2xl font-display">Stack</h2>
+          <h2 className="text-xl font-display">Stack</h2>
           <div className="h-px flex-1 bg-border" />
         </div>
         <AnimatedTerminal techStack={techStack} />
       </section>
 
       {/* Beyond Code */}
-      <section className="container max-w-4xl">
+      <section className="container max-w-4xl mt-8">
         <div className="flex items-baseline gap-4 mb-8">
-          <h2 className="text-2xl font-display">Beyond Code</h2>
+          <h2 className="text-xl font-display">Beyond Code</h2>
           <div className="h-px flex-1 bg-border" />
         </div>
         <AnimatedInterests interests={interests} />
