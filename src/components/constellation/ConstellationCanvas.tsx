@@ -7,6 +7,16 @@ import * as THREE from "three";
 import { Star } from "./three/Star";
 import { AllConstellationLines } from "./three/ConstellationLine";
 import {
+  HomePlanet,
+  SmallMoon,
+  SpaceStation,
+  OceanPlanet,
+  BlazingSun,
+  NebulaCloud,
+  DarkNebula,
+  PrismaticNebula,
+} from "./three/SpaceObjects";
+import {
   constellationLayout,
   voyageData,
   constellationSceneRanges,
@@ -156,9 +166,9 @@ function CameraController({
       }
     } else if (progress < career.end) {
       // Career: Follow along the career path
+      // Camera positioned to see both current AND next destination
       const t = (progress - career.start) / (career.end - career.start);
 
-      // Interpolate camera through career stars
       const careerPath = [
         constellationLayout.find(s => s.id === "origin")!,
         constellationLayout.find(s => s.id === "ey")!,
@@ -173,13 +183,21 @@ function CameraController({
 
       const currentStar = careerPath[Math.min(pathIndex, careerPath.length - 1)];
       const nextStar = careerPath[Math.min(pathIndex + 1, careerPath.length - 1)];
+      // Look ahead to the star AFTER next (if exists) for better visibility
+      const lookAheadStar = careerPath[Math.min(pathIndex + 2, careerPath.length - 1)];
 
       const x = THREE.MathUtils.lerp(currentStar.x, nextStar.x, pathT) * POSITION_SCALE;
       const y = THREE.MathUtils.lerp(currentStar.y, nextStar.y, pathT) * POSITION_SCALE;
       const z = THREE.MathUtils.lerp(currentStar.z, nextStar.z, pathT) * POSITION_SCALE;
 
-      newPos.set(x + lateralOffset * 8, y + 5, z + 25);
-      newLookAt.set(x, y, z);
+      // Position camera behind and to the side - like following in a spaceship
+      newPos.set(x + lateralOffset * 8 - 5, y + 8, z + 30);
+
+      // Look AHEAD toward the next destination (not current)
+      const lookX = THREE.MathUtils.lerp(nextStar.x, lookAheadStar.x, 0.3) * POSITION_SCALE;
+      const lookY = THREE.MathUtils.lerp(nextStar.y, lookAheadStar.y, 0.3) * POSITION_SCALE;
+      const lookZ = THREE.MathUtils.lerp(nextStar.z, lookAheadStar.z, 0.3) * POSITION_SCALE;
+      newLookAt.set(lookX, lookY, lookZ);
     } else if (progress < warp.end) {
       // Warp: Transition effect - camera speeds forward
       const t = (progress - warp.start) / (warp.end - warp.start);
@@ -193,6 +211,7 @@ function CameraController({
       newLookAt.set(0, glanceStar.y * POSITION_SCALE + 20, 0);
     } else if (progress < projects.end) {
       // Projects: Navigate through project nebulae
+      // Same lookahead pattern - see what's coming
       const t = (progress - projects.start) / (projects.end - projects.start);
 
       const projectPath = [
@@ -207,13 +226,20 @@ function CameraController({
 
       const currentStar = projectPath[Math.min(pathIndex, projectPath.length - 1)];
       const nextStar = projectPath[Math.min(pathIndex + 1, projectPath.length - 1)];
+      const lookAheadStar = projectPath[Math.min(pathIndex + 2, projectPath.length - 1)];
 
       const x = THREE.MathUtils.lerp(currentStar.x, nextStar.x, pathT) * POSITION_SCALE;
       const y = THREE.MathUtils.lerp(currentStar.y, nextStar.y, pathT) * POSITION_SCALE;
       const z = THREE.MathUtils.lerp(currentStar.z, nextStar.z, pathT) * POSITION_SCALE;
 
-      newPos.set(x + lateralOffset * 8, y + 6, z + 20);
-      newLookAt.set(x, y, z);
+      // Float alongside the nebulae
+      newPos.set(x + lateralOffset * 8 - 3, y + 8, z + 25);
+
+      // Look ahead to next nebula
+      const lookX = THREE.MathUtils.lerp(nextStar.x, lookAheadStar.x, 0.4) * POSITION_SCALE;
+      const lookY = THREE.MathUtils.lerp(nextStar.y, lookAheadStar.y, 0.4) * POSITION_SCALE;
+      const lookZ = THREE.MathUtils.lerp(nextStar.z, lookAheadStar.z, 0.4) * POSITION_SCALE;
+      newLookAt.set(lookX, lookY, lookZ);
     } else {
       // Reveal: Pull back to see full constellation
       const t = (progress - reveal.start) / (reveal.end - reveal.start);
@@ -391,32 +417,136 @@ function SceneContent({
         progress={progress}
       />
 
-      {/* Constellation stars */}
+      {/* Constellation waypoints - diverse space objects */}
       {constellationLayout.map((star) => {
         const isActive = activeStar?.id === star.id;
         const isIlluminated = illuminatedStars.includes(star.id);
         const color = getStarColor(star.id);
+        const position: [number, number, number] = [
+          star.x * POSITION_SCALE,
+          star.y * POSITION_SCALE,
+          star.z * POSITION_SCALE,
+        ];
 
-        // Size based on type
-        let size = 1;
-        if (star.type === "origin") size = 1.5;
-        if (star.type === "company") size = 1.2;
-        if (star.type === "project") size = 1.3;
+        // Render different space objects based on waypoint
+        switch (star.id) {
+          case "origin":
+            // Home planet - where the journey begins
+            return (
+              <HomePlanet
+                key={star.id}
+                position={position}
+                color={color}
+                size={1.8}
+                isActive={isActive}
+                isIlluminated={isIlluminated}
+              />
+            );
 
-        return (
-          <Star
-            key={star.id}
-            position={[
-              star.x * POSITION_SCALE,
-              star.y * POSITION_SCALE,
-              star.z * POSITION_SCALE,
-            ]}
-            color={color}
-            size={size}
-            isActive={isActive}
-            isIlluminated={isIlluminated}
-          />
-        );
+          case "ey":
+            // First job - a small moon (humble beginnings)
+            return (
+              <SmallMoon
+                key={star.id}
+                position={position}
+                color={color}
+                size={1.5}
+                isActive={isActive}
+                isIlluminated={isIlluminated}
+              />
+            );
+
+          case "6figr":
+            // Satellite type - a space station
+            return (
+              <SpaceStation
+                key={star.id}
+                position={position}
+                color={color}
+                size={1.4}
+                isActive={isActive}
+                isIlluminated={isIlluminated}
+              />
+            );
+
+          case "captain-fresh":
+            // Seafood company - an ocean planet!
+            return (
+              <OceanPlanet
+                key={star.id}
+                position={position}
+                color={color}
+                size={1.6}
+                isActive={isActive}
+                isIlluminated={isIlluminated}
+              />
+            );
+
+          case "glance":
+            // Current position - blazing sun (the brightest!)
+            return (
+              <BlazingSun
+                key={star.id}
+                position={position}
+                color={color}
+                size={2.0}
+                isActive={isActive}
+                isIlluminated={isIlluminated}
+              />
+            );
+
+          case "devtoolkit":
+            // Matrix-themed project - green nebula
+            return (
+              <NebulaCloud
+                key={star.id}
+                position={position}
+                color={color}
+                size={1.8}
+                isActive={isActive}
+                isIlluminated={isIlluminated}
+              />
+            );
+
+          case "colorful-extension":
+            // Rainbow-themed project - prismatic nebula
+            return (
+              <PrismaticNebula
+                key={star.id}
+                position={position}
+                color={color}
+                size={1.8}
+                isActive={isActive}
+                isIlluminated={isIlluminated}
+              />
+            );
+
+          case "black-note":
+            // Minimal dark theme - dark nebula
+            return (
+              <DarkNebula
+                key={star.id}
+                position={position}
+                color={color}
+                size={1.6}
+                isActive={isActive}
+                isIlluminated={isIlluminated}
+              />
+            );
+
+          default:
+            // Fallback to regular star
+            return (
+              <Star
+                key={star.id}
+                position={position}
+                color={color}
+                size={1.2}
+                isActive={isActive}
+                isIlluminated={isIlluminated}
+              />
+            );
+        }
       })}
 
       {/* Subtle grid for depth perception during intro */}
