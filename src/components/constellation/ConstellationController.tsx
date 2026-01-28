@@ -26,6 +26,8 @@ interface ConstellationState {
   isMoving: boolean;
   isBoosting: boolean;
   progressMotion: MotionValue<number>;
+  dragOffset: { x: number; y: number };
+  isDragging: boolean;
 }
 
 interface ConstellationControllerProps {
@@ -39,6 +41,12 @@ export function ConstellationController({ children }: ConstellationControllerPro
   const [cameraRoll, setCameraRoll] = useState(0);
   const [isMoving, setIsMoving] = useState(false);
   const [isBoosting, setIsBoosting] = useState(false);
+
+  // Drag state for mouse/touch exploration
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const dragStart = useRef({ x: 0, y: 0 });
+  const dragStartOffset = useRef({ x: 0, y: 0 });
 
   // Motion value for smooth animations
   const progressMotion = useMotionValue(0);
@@ -54,6 +62,8 @@ export function ConstellationController({ children }: ConstellationControllerPro
   const LATERAL_DECAY = 0.92;
   const ROLL_AMOUNT = 8;
   const ROLL_DECAY = 0.9;
+  const DRAG_SENSITIVITY = 0.003;
+  const DRAG_DECAY = 0.95;
 
   // Handle keyboard input
   useEffect(() => {
@@ -85,6 +95,53 @@ export function ConstellationController({ children }: ConstellationControllerPro
       window.removeEventListener('keyup', handleKeyUp);
     };
   }, []);
+
+  // Handle mouse/touch drag for looking around
+  const handlePointerDown = useCallback((e: React.PointerEvent) => {
+    setIsDragging(true);
+    dragStart.current = { x: e.clientX, y: e.clientY };
+    dragStartOffset.current = { ...dragOffset };
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+  }, [dragOffset]);
+
+  const handlePointerMove = useCallback((e: React.PointerEvent) => {
+    if (!isDragging) return;
+
+    const deltaX = (e.clientX - dragStart.current.x) * DRAG_SENSITIVITY;
+    const deltaY = (e.clientY - dragStart.current.y) * DRAG_SENSITIVITY;
+
+    setDragOffset({
+      x: Math.max(-1, Math.min(1, dragStartOffset.current.x + deltaX)),
+      y: Math.max(-0.5, Math.min(0.5, dragStartOffset.current.y + deltaY)),
+    });
+  }, [isDragging, DRAG_SENSITIVITY]);
+
+  const handlePointerUp = useCallback((e: React.PointerEvent) => {
+    setIsDragging(false);
+    (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+  }, []);
+
+  // Decay drag offset when not dragging
+  useEffect(() => {
+    if (isDragging) return;
+
+    const decayInterval = setInterval(() => {
+      setDragOffset(prev => {
+        const newX = prev.x * DRAG_DECAY;
+        const newY = prev.y * DRAG_DECAY;
+
+        // Snap to zero when very small
+        if (Math.abs(newX) < 0.01 && Math.abs(newY) < 0.01) {
+          clearInterval(decayInterval);
+          return { x: 0, y: 0 };
+        }
+
+        return { x: newX, y: newY };
+      });
+    }, 16);
+
+    return () => clearInterval(decayInterval);
+  }, [isDragging, DRAG_DECAY]);
 
   // Main animation loop for movement
   useEffect(() => {
@@ -179,13 +236,20 @@ export function ConstellationController({ children }: ConstellationControllerPro
     isMoving,
     isBoosting,
     progressMotion,
+    dragOffset,
+    isDragging,
   };
 
   return (
     <div
       ref={containerRef}
-      className="constellation-container fixed inset-0 overflow-hidden bg-[#030318] outline-none"
+      className="constellation-container fixed inset-0 overflow-hidden bg-[#030318] outline-none cursor-grab active:cursor-grabbing"
       tabIndex={0}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerLeave={handlePointerUp}
+      style={{ touchAction: 'none' }}
     >
       {/* Viewport with camera transforms */}
       <div
@@ -242,6 +306,17 @@ function KeyboardHints({ hasStarted }: { hasStarted: boolean }) {
             SHIFT
           </kbd>
           <span className="text-[10px] font-mono text-white/50">Boost</span>
+        </div>
+
+        <div className="w-px h-8 bg-white/10" />
+
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 flex items-center justify-center bg-white/10 border border-white/20 rounded">
+            <svg className="w-4 h-4 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11" />
+            </svg>
+          </div>
+          <span className="text-[10px] font-mono text-white/50">Drag to look</span>
         </div>
       </div>
     </div>
