@@ -665,15 +665,11 @@ export function NebulaCloud({
         <bufferGeometry>
           <bufferAttribute
             attach="attributes-position"
-            count={particleData.positions.length / 3}
-            array={particleData.positions}
-            itemSize={3}
+            args={[particleData.positions, 3]}
           />
           <bufferAttribute
             attach="attributes-color"
-            count={particleData.colors.length / 3}
-            array={particleData.colors}
-            itemSize={3}
+            args={[particleData.colors, 3]}
           />
         </bufferGeometry>
         <pointsMaterial
