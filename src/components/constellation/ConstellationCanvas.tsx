@@ -37,6 +37,8 @@ interface ConstellationCanvasProps {
   cameraRoll: number;
   isMoving: boolean;
   isBoosting: boolean;
+  dragOffset?: { x: number; y: number };
+  isDragging?: boolean;
 }
 
 // Scale factor for star positions
@@ -124,17 +126,21 @@ function CameraController({
   lateralOffset,
   isMoving,
   isBoosting,
+  dragOffset = { x: 0, y: 0 },
 }: {
   progress: number;
   lateralOffset: number;
   isMoving: boolean;
   isBoosting: boolean;
+  dragOffset?: { x: number; y: number };
 }) {
   const { camera } = useThree();
   const targetPos = useRef(new THREE.Vector3(0, 0, 60));
   const targetLookAt = useRef(new THREE.Vector3(0, 0, 0));
   // Store boost offset separately to avoid mutating camera directly
   const boostOffset = useRef({ x: 0, y: 0 });
+  // Drag offset for look-around (scaled for 3D space)
+  const DRAG_SCALE = 20;
 
   useFrame((state) => {
     const time = state.clock.elapsedTime;
@@ -262,13 +268,18 @@ function CameraController({
       boostOffset.current.y *= 0.9;
     }
 
-    // Apply position including boost offset
+    // Apply position including boost offset and drag offset for look-around
     camera.position.set(
-      targetPos.current.x + boostOffset.current.x,
-      targetPos.current.y + boostOffset.current.y,
+      targetPos.current.x + boostOffset.current.x + dragOffset.x * DRAG_SCALE,
+      targetPos.current.y + boostOffset.current.y + dragOffset.y * DRAG_SCALE,
       targetPos.current.z
     );
-    camera.lookAt(targetLookAt.current);
+
+    // Look direction also shifts with drag for true look-around feel
+    const lookTarget = targetLookAt.current.clone();
+    lookTarget.x += dragOffset.x * DRAG_SCALE * 0.5;
+    lookTarget.y += dragOffset.y * DRAG_SCALE * 0.5;
+    camera.lookAt(lookTarget);
   });
 
   return null;
@@ -359,6 +370,7 @@ function SceneContent({
   lateralOffset,
   isMoving,
   isBoosting,
+  dragOffset,
 }: ConstellationCanvasProps) {
   return (
     <>
@@ -368,6 +380,7 @@ function SceneContent({
         lateralOffset={lateralOffset}
         isMoving={isMoving}
         isBoosting={isBoosting}
+        dragOffset={dragOffset}
       />
 
       {/* Lighting */}
