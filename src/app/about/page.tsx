@@ -87,7 +87,7 @@ export default function AboutPage() {
       </section>
 
       {/* Tech Stack */}
-      <section className="container max-w-4xl mb-32">
+      <section className="container max-w-4xl">
         <div className="flex items-baseline gap-4 mb-8">
           <h2 className="text-xl font-display">Stack</h2>
           <div className="h-px flex-1 bg-border" />
@@ -96,7 +96,7 @@ export default function AboutPage() {
       </section>
 
       {/* Beyond Code */}
-      <section className="container max-w-4xl mt-8">
+      <section className="container max-w-4xl !mt-12">
         <div className="flex items-baseline gap-4 mb-8">
           <h2 className="text-xl font-display">Beyond Code</h2>
           <div className="h-px flex-1 bg-border" />
