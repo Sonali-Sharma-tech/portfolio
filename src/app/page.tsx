@@ -5,6 +5,51 @@ import { blogSource, type BlogPage } from "@/lib/source";
 import { TerminalHero } from "@/components/sections/terminal-hero";
 import { SkillBars } from "@/components/sections/skill-bars";
 import { ContactButton } from "@/components/ui/contact-button";
+import { AnimatedTimeline } from "@/components/about/animated-timeline";
+
+const experience = [
+  {
+    company: "Glance",
+    role: "SDE III",
+    period: "Jul 2025 - Present",
+    description: "Leading frontend architecture for products reaching millions daily.",
+    skills: ["React", "TypeScript", "System Design"],
+    current: true,
+    year: "2025",
+  },
+  {
+    company: "Glance",
+    role: "SDE II",
+    period: "Aug 2023 - Jun 2025",
+    description: "Built interactive features with Svelte for the lock screen platform.",
+    skills: ["Svelte", "SvelteKit"],
+    year: "2023",
+  },
+  {
+    company: "Captain Fresh",
+    role: "Software Engineer",
+    period: "Jun 2022 - Jul 2023",
+    description: "Developed B2B seafood logistics platform frontend.",
+    skills: ["React", "Redux"],
+    year: "2022",
+  },
+  {
+    company: "6figr.com",
+    role: "Frontend Developer",
+    period: "Dec 2020 - May 2022",
+    description: "Created salary insights and career analytics platform.",
+    skills: ["Angular", "TypeScript"],
+    year: "2020",
+  },
+  {
+    company: "EY",
+    role: "Web Developer Intern",
+    period: "Aug 2019 - Apr 2020",
+    description: "Started the journey. Built internal tools and learned enterprise patterns.",
+    skills: ["Angular", "AJAX"],
+    year: "2019",
+  },
+];
 
 function formatDate(dateString: string): string {
   const date = new Date(dateString);
@@ -182,6 +227,31 @@ export default function Home() {
           SKILLS - Terminal Progress Bars
           ======================================== */}
       <SkillBars />
+
+      {/* Divider */}
+      <div className="container">
+        <div className="divider-cyber" />
+      </div>
+
+      {/* ========================================
+          CAREER JOURNEY - Timeline
+          ======================================== */}
+      <section className="section relative">
+        <div className="container max-w-4xl">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16">
+            <div className="scroll-reveal">
+              <p className="section-label mb-4">FLIGHT_PATH</p>
+              <h2 className="text-gradient-cyber">Career Journey</h2>
+            </div>
+            <div className="scroll-reveal">
+              <Link href="/about" className="link-cyber text-lg">
+                [VIEW FULL PROFILE] →
+              </Link>
+            </div>
+          </div>
+          <AnimatedTimeline experience={experience} />
+        </div>
+      </section>
 
       {/* Divider */}
       <div className="container">
