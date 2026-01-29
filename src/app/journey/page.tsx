@@ -36,6 +36,7 @@ export default function JourneyPage() {
             cameraRoll={state.cameraRoll}
             isMoving={state.isMoving}
             isBoosting={state.isBoosting}
+            dragOffset={state.dragOffset}
           />
 
           {/* Star information card */}
