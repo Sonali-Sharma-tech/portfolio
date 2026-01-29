@@ -21,7 +21,7 @@ export function AnimatedTimeline({ experience }: AnimatedTimelineProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start 50%", "end 50%"],
+    offset: ["start 70%", "end 85%"],
   });
 
   // Timeline line grows as you scroll
@@ -30,7 +30,7 @@ export function AnimatedTimeline({ experience }: AnimatedTimelineProps) {
   return (
     <div ref={containerRef} className="relative">
       {/* Animated center line - Desktop */}
-      <div className="hidden md:block absolute left-1/2 top-0 bottom-[52px] -translate-x-1/2">
+      <div className="hidden md:block absolute left-1/2 top-0 md:bottom-2 lg:bottom-4 xl:bottom-12 -translate-x-1/2">
         <div className="w-px h-full bg-border/20" />
         <motion.div
           className="absolute top-0 left-0 w-px bg-gradient-to-b from-cyan via-magenta to-orange"
