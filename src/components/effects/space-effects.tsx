@@ -13,11 +13,6 @@ function Starfield() {
   );
 }
 
-// Nebula clouds - subtle colored fog
-function Nebula() {
-  return <div className="nebula" aria-hidden="true" />;
-}
-
 // Enhanced shooting stars - beautiful meteor streaks across the sky
 function ShootingStars() {
   useEffect(() => {
@@ -127,7 +122,6 @@ export function SpaceEffects() {
   return (
     <>
       <Starfield />
-      <Nebula />
       <ShootingStars />
     </>
   );
