@@ -91,6 +91,41 @@ export default function Home() {
       })()}
 
       {/* ========================================
+          CAREER JOURNEY - Timeline
+          ======================================== */}
+      <section className="section relative">
+        <div className="container max-w-4xl">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16">
+            <div className="scroll-reveal">
+              <p className="section-label mb-4">FLIGHT_PATH</p>
+              <h2 className="text-gradient-cyber">Career Journey</h2>
+            </div>
+            <div className="scroll-reveal">
+              <Link href="/about" className="link-cyber text-lg">
+                [VIEW FULL PROFILE] →
+              </Link>
+            </div>
+          </div>
+          <AnimatedTimeline experience={experience} />
+        </div>
+      </section>
+
+      {/* Divider */}
+      <div className="container">
+        <div className="divider-cyber" />
+      </div>
+
+      {/* ========================================
+          SKILLS - Terminal Progress Bars
+          ======================================== */}
+      <SkillBars />
+
+      {/* Divider */}
+      <div className="container">
+        <div className="divider-cyber" />
+      </div>
+
+      {/* ========================================
           PROJECTS - Holographic Cards
           ======================================== */}
       <section className="section relative">
@@ -215,41 +250,6 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Divider */}
-      <div className="container">
-        <div className="divider-cyber" />
-      </div>
-
-      {/* ========================================
-          SKILLS - Terminal Progress Bars
-          ======================================== */}
-      <SkillBars />
-
-      {/* Divider */}
-      <div className="container">
-        <div className="divider-cyber" />
-      </div>
-
-      {/* ========================================
-          CAREER JOURNEY - Timeline
-          ======================================== */}
-      <section className="section relative">
-        <div className="container max-w-4xl">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16">
-            <div className="scroll-reveal">
-              <p className="section-label mb-4">FLIGHT_PATH</p>
-              <h2 className="text-gradient-cyber">Career Journey</h2>
-            </div>
-            <div className="scroll-reveal">
-              <Link href="/about" className="link-cyber text-lg">
-                [VIEW FULL PROFILE] →
-              </Link>
-            </div>
-          </div>
-          <AnimatedTimeline experience={experience} />
         </div>
       </section>
 
