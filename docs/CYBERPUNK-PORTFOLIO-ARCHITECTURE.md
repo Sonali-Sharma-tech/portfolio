@@ -1,12 +1,14 @@
 # Cyberpunk Portfolio - Complete Architecture Documentation
 
-> **Branch**: `feature/cyberpunk-city-theme`
-> **Status**: Feature complete, worktree removed
-> **Technologies**: Next.js 14, React Three Fiber, Three.js, Framer Motion, Tailwind CSS
+> **Branch**: `main` (production)
+> **Last Updated**: January 2026
+> **Technologies**: Next.js 16, React 19, React Three Fiber, Three.js, Framer Motion, Tailwind CSS v4
 
 ---
 
 ## Table of Contents
+
+0. [Current Portfolio Structure](#current-portfolio-structure)
 
 1. [Executive Summary](#executive-summary)
 2. [Package Architecture](#package-architecture)
@@ -17,6 +19,102 @@
 7. [Data Structures](#data-structures)
 8. [Animation Systems](#animation-systems)
 9. [Performance Optimizations](#performance-optimizations)
+
+---
+
+## Current Portfolio Structure
+
+### Homepage Section Order (January 2026)
+
+The homepage follows a research-backed section order optimized for recruiter engagement:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         HOMEPAGE FLOW                            │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  1. HERO (TerminalHero)                                         │
+│     └─ Terminal-style intro with typing animation               │
+│     └─ CTA buttons: Explore Projects, View Profile              │
+│                                                                  │
+│  2. SKILLS MARQUEE                                               │
+│     └─ Scrolling tech stack banner                              │
+│     └─ REACT ◆ TYPESCRIPT ◆ NEXT.JS ◆ NODE.JS...               │
+│                                                                  │
+│  3. CAREER JOURNEY (AnimatedTimeline)                           │
+│     └─ Scroll-animated vertical timeline                        │
+│     └─ 5 career milestones with skills tags                     │
+│     └─ Gradient progress line on scroll                         │
+│                                                                  │
+│  4. SKILLS (SkillBars)                                          │
+│     └─ Terminal-style progress bars                             │
+│     └─ Animated proficiency levels                              │
+│                                                                  │
+│  5. PROJECTS (Bento Grid)                                       │
+│     └─ Featured projects in holographic cards                   │
+│     └─ 1 large + 1 medium + 2 small cards                       │
+│     └─ Hover effects with corner accents                        │
+│                                                                  │
+│  6. BLOG (Transmission Cards)                                   │
+│     └─ Latest 3 blog posts                                      │
+│     └─ Shimmer effects on hover                                 │
+│                                                                  │
+│  7. CTA (Contact Section)                                       │
+│     └─ Large "COLLABORATE?" heading                             │
+│     └─ Glassmorphism buttons                                    │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Routes Architecture
+
+```
+src/app/
+├── page.tsx              # Homepage (sections above)
+├── layout.tsx            # Root layout with header/footer
+├── globals.css           # 1800+ lines of cyberpunk CSS
+├── about/
+│   └── page.tsx          # About page with AnimatedTimeline
+├── projects/
+│   └── page.tsx          # All projects grid
+├── blog/
+│   ├── page.tsx          # Blog listing
+│   └── [slug]/page.tsx   # Individual blog posts (MDX)
+├── journey/
+│   ├── page.tsx          # 3D Constellation Voyage
+│   └── voyage.css        # Route-specific styles
+└── city-journey/
+    └── page.tsx          # Alternative city theme (WIP)
+```
+
+### Key Components
+
+| Component | Location | Purpose |
+|-----------|----------|---------|
+| `TerminalHero` | `sections/terminal-hero.tsx` | Hero with typing animation |
+| `AnimatedTimeline` | `about/animated-timeline.tsx` | Scroll-driven career timeline |
+| `SkillBars` | `sections/skill-bars.tsx` | Animated skill progress bars |
+| `ConstellationCanvas` | `constellation/ConstellationCanvas.tsx` | 3D voyage with Three.js |
+| `ConstellationController` | `constellation/ConstellationController.tsx` | Keyboard/mouse controls |
+
+### Design System
+
+```css
+/* Color Palette (CSS Variables) */
+--neon-cyan: #00FFF5;
+--neon-magenta: #FF00FF;
+--neon-orange: #FF6B00;
+--neon-green: #00FF41;
+
+--space-void: #030318;
+--space-deep: #0a0a1f;
+--space-surface: #12122a;
+
+/* Button System */
+.btn-glass        /* Primary glassmorphism */
+.btn-glass-ghost  /* Secondary/ghost variant */
+.btn-glass-lg     /* Large size modifier */
+```
 
 ---
 
