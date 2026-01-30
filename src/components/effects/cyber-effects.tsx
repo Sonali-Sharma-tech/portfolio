@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 // Cinematic intro overlay with warp effect
 function IntroOverlay() {
@@ -52,6 +52,59 @@ function IntroOverlay() {
 // CRT scanline overlay
 function CRTOverlay() {
   return <div className="crt-overlay" aria-hidden="true" />;
+}
+
+// Smooth cursor glow that follows mouse
+function CursorGlow() {
+  const glowRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Only show on devices with fine pointer (not touch)
+    const hasPointer = window.matchMedia("(pointer: fine)").matches;
+    if (!hasPointer) {
+      if (containerRef.current) {
+        containerRef.current.style.display = "none";
+      }
+      return;
+    }
+
+    let mouseX = 0;
+    let mouseY = 0;
+    let currentX = 0;
+    let currentY = 0;
+    let animationId: number;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    };
+
+    const animate = () => {
+      currentX += (mouseX - currentX) * 0.06;
+      currentY += (mouseY - currentY) * 0.06;
+
+      if (glowRef.current) {
+        glowRef.current.style.transform = `translate(${currentX - 150}px, ${currentY - 150}px)`;
+      }
+
+      animationId = requestAnimationFrame(animate);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    animationId = requestAnimationFrame(animate);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      cancelAnimationFrame(animationId);
+    };
+  }, []);
+
+  return (
+    <div ref={containerRef}>
+      <div ref={glowRef} className="cursor-glow-ambient" aria-hidden="true" />
+    </div>
+  );
 }
 
 // Glitch effect on interactive elements
@@ -179,6 +232,7 @@ export function CyberEffects() {
     <>
       <IntroOverlay />
       <CRTOverlay />
+      <CursorGlow />
       <GlitchEnhancer />
       <HoloEffect />
       <RandomGlitch />
