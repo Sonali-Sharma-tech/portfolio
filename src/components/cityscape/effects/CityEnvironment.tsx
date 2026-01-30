@@ -6,7 +6,7 @@ import * as THREE from "three";
 
 // ==========================================
 // CITY ENVIRONMENT
-// Cyberpunk city backdrop with rain and fog
+// Cyberpunk city backdrop with fog
 // Much lighter than space particles
 // ==========================================
 
@@ -23,9 +23,6 @@ export function CityEnvironment({ scrollProgress, children }: CityEnvironmentPro
 
       {/* Distant city silhouette */}
       <CitySilhouette scrollProgress={scrollProgress} />
-
-      {/* Rain particles */}
-      <CyberpunkRain scrollProgress={scrollProgress} />
 
       {/* Fog layer */}
       <FogLayer scrollProgress={scrollProgress} />
@@ -183,74 +180,6 @@ function WindowLights({ buildings }: { buildings: Array<{ x: number; height: num
     </points>
   );
 }
-
-// ==========================================
-// CYBERPUNK RAIN
-// Optimized rain particles - only 500
-// ==========================================
-
-function CyberpunkRain({ scrollProgress }: { scrollProgress: number }) {
-  const pointsRef = useRef<THREE.Points>(null);
-
-  const [geometry, velocities] = useMemo(() => {
-    const count = 500;
-    const positions = new Float32Array(count * 3);
-    const velocities = new Float32Array(count);
-
-    for (let i = 0; i < count; i++) {
-      const i3 = i * 3;
-      positions[i3] = (Math.random() - 0.5) * 200;
-      positions[i3 + 1] = Math.random() * 100;
-      positions[i3 + 2] = (Math.random() - 0.5) * 100;
-      velocities[i] = 0.5 + Math.random() * 1;
-    }
-
-    const geom = new THREE.BufferGeometry();
-    geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-
-    return [geom, velocities];
-  }, []);
-
-  useFrame(() => {
-    if (!pointsRef.current) return;
-
-    const positions = pointsRef.current.geometry.attributes.position as THREE.BufferAttribute;
-    const array = positions.array as Float32Array;
-
-    for (let i = 0; i < array.length / 3; i++) {
-      const i3 = i * 3;
-
-      // Move rain down
-      array[i3 + 1] -= velocities[i];
-
-      // Reset when below ground
-      if (array[i3 + 1] < -10) {
-        array[i3 + 1] = 100;
-        array[i3] = (Math.random() - 0.5) * 200;
-        array[i3 + 2] = (Math.random() - 0.5) * 100;
-      }
-    }
-
-    positions.needsUpdate = true;
-  });
-
-  // Only show rain in certain scenes
-  const rainOpacity = scrollProgress > 10 && scrollProgress < 90 ? 0.4 : 0.2;
-
-  return (
-    <points ref={pointsRef} geometry={geometry}>
-      <pointsMaterial
-        size={0.15}
-        color="#4488ff"
-        transparent
-        opacity={rainOpacity}
-        sizeAttenuation
-        depthWrite={false}
-      />
-    </points>
-  );
-}
-
 // ==========================================
 // FOG LAYER
 // Volumetric fog effect using planes
