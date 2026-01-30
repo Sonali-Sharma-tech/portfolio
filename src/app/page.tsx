@@ -4,7 +4,6 @@ import { getFeaturedProjects } from "@/lib/projects";
 import { blogSource, type BlogPage } from "@/lib/source";
 import { TerminalHero } from "@/components/sections/terminal-hero";
 import { SkillBars } from "@/components/sections/skill-bars";
-import { ContactButton } from "@/components/ui/contact-button";
 import { AnimatedTimeline } from "@/components/about/animated-timeline";
 
 const experience = [
@@ -381,12 +380,6 @@ export default function Home() {
           </div>
 
           <div className="scroll-glitch flex flex-wrap justify-center gap-4">
-            <ContactButton className="btn-glass btn-glass-lg group">
-              <span>INITIATE CONTACT</span>
-              <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </ContactButton>
             <Link
               href="https://github.com/Sonali-Sharma-tech"
               target="_blank"
