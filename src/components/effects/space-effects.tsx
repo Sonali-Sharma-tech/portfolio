@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 // Parallax Starfield - multiple layers at different speeds
 function Starfield() {
@@ -18,117 +18,105 @@ function Nebula() {
   return <div className="nebula" aria-hidden="true" />;
 }
 
-// Matrix column type
-interface MatrixColumn {
-  id: number;
-  left: string;
-  delay: string;
-  duration: string;
-  text: string;
-}
-
-// Matrix-style code rain with space characters
-function MatrixRain() {
-  const [columns, setColumns] = useState<MatrixColumn[]>([]);
-
-  // Generate columns only on client side to avoid hydration mismatch
-  useEffect(() => {
-    const chars = "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
-    const cols: MatrixColumn[] = [];
-
-    for (let i = 0; i < 30; i++) {
-      const text = Array.from(
-        { length: 20 },
-        () => chars[Math.floor(Math.random() * chars.length)]
-      ).join("");
-
-      cols.push({
-        id: i,
-        left: `${(i / 30) * 100}%`,
-        delay: `${Math.random() * 10}s`,
-        duration: `${8 + Math.random() * 12}s`,
-        text,
-      });
-    }
-
-    setColumns(cols);
-  }, []);
-
-  // Don't render until client-side generation is complete
-  if (columns.length === 0) {
-    return <div className="matrix-rain" aria-hidden="true" />;
-  }
-
-  return (
-    <div className="matrix-rain" aria-hidden="true">
-      {columns.map((col) => (
-        <div
-          key={col.id}
-          className="matrix-column"
-          style={{
-            left: col.left,
-            animationDelay: col.delay,
-            animationDuration: col.duration,
-          }}
-        >
-          {col.text}
-        </div>
-      ))}
-    </div>
-  );
-}
-
-// Floating space objects removed - they were distracting from the main terminal UI
-
-// Shooting stars - occasional streaks
+// Enhanced shooting stars - beautiful meteor streaks across the sky
 function ShootingStars() {
   useEffect(() => {
+    // Color palette for variety - matches our cyberpunk theme
+    const colors = [
+      { main: "#00fff5", glow: "rgba(0, 255, 245, 0.6)" },   // Cyan
+      { main: "#ffffff", glow: "rgba(255, 255, 255, 0.5)" }, // White
+      { main: "#ff00ff", glow: "rgba(255, 0, 255, 0.4)" },   // Magenta (rare)
+    ];
+
     const createShootingStar = () => {
       const star = document.createElement("div");
       star.className = "shooting-star";
+
+      // Random properties for variety
+      const startX = Math.random() * 100;
+      const startY = Math.random() * 60; // Keep in upper portion of screen
+      const length = 80 + Math.random() * 120;
+      const duration = 0.8 + Math.random() * 0.6;
+      const angle = -25 + Math.random() * 15; // Slight angle variation
+
+      // Mostly white/cyan, occasionally magenta
+      const colorChoice = Math.random();
+      const color = colorChoice > 0.15
+        ? (colorChoice > 0.5 ? colors[0] : colors[1])
+        : colors[2];
+
       star.style.cssText = `
         position: fixed;
-        top: ${Math.random() * 50}%;
-        left: ${Math.random() * 100}%;
-        width: ${50 + Math.random() * 100}px;
+        top: ${startY}%;
+        left: ${startX}%;
+        width: ${length}px;
         height: 2px;
-        background: linear-gradient(90deg, transparent, #00fff5, transparent);
-        transform: rotate(${-30 + Math.random() * 20}deg);
-        animation: shoot 1s ease-out forwards;
+        background: linear-gradient(90deg, ${color.main}, ${color.glow}, transparent);
+        transform: rotate(${angle}deg);
+        animation: shootingStar ${duration}s ease-out forwards;
         pointer-events: none;
-        z-index: -1;
+        z-index: 0;
+        border-radius: 2px;
+        box-shadow: 0 0 6px ${color.glow}, 0 0 12px ${color.glow};
       `;
 
+      // Create a small bright head for the meteor
+      const head = document.createElement("div");
+      head.style.cssText = `
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 4px;
+        background: ${color.main};
+        border-radius: 50%;
+        box-shadow: 0 0 8px ${color.main}, 0 0 16px ${color.glow};
+      `;
+      star.appendChild(head);
+
       document.body.appendChild(star);
-      setTimeout(() => star.remove(), 1000);
+      setTimeout(() => star.remove(), duration * 1000 + 100);
     };
 
     // Add shooting star animation
     const style = document.createElement("style");
     style.textContent = `
-      @keyframes shoot {
+      @keyframes shootingStar {
         0% {
+          opacity: 0;
+          transform: translateX(0) translateY(0) rotate(-25deg) scaleX(0.3);
+        }
+        10% {
           opacity: 1;
-          transform: translateX(0) translateY(0) rotate(-30deg);
+          transform: translateX(20px) translateY(15px) rotate(-25deg) scaleX(1);
         }
         100% {
           opacity: 0;
-          transform: translateX(300px) translateY(200px) rotate(-30deg);
+          transform: translateX(350px) translateY(250px) rotate(-25deg) scaleX(0.5);
         }
       }
     `;
     document.head.appendChild(style);
 
-    // Create shooting stars at random intervals
-    const interval = setInterval(() => {
-      if (Math.random() > 0.7) {
+    // Create shooting stars more frequently for a livelier effect
+    // Staggered intervals for natural feel
+    const createWithRandomDelay = () => {
+      const delay = 1500 + Math.random() * 2500; // 1.5-4 seconds
+      setTimeout(() => {
         createShootingStar();
-      }
-    }, 3000);
+        createWithRandomDelay();
+      }, delay);
+    };
+
+    // Start multiple "threads" for overlapping stars
+    createWithRandomDelay();
+    setTimeout(() => createWithRandomDelay(), 800);
 
     return () => {
-      clearInterval(interval);
       style.remove();
+      // Clean up any remaining stars
+      document.querySelectorAll(".shooting-star").forEach((el) => el.remove());
     };
   }, []);
 
@@ -140,7 +128,6 @@ export function SpaceEffects() {
     <>
       <Starfield />
       <Nebula />
-      <MatrixRain />
       <ShootingStars />
     </>
   );

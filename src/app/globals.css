@@ -1181,40 +1181,6 @@ h3 {
 }
 
 /* ============================================
-   MATRIX CODE RAIN
-   ============================================ */
-
-.matrix-rain {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 100vh;
-  pointer-events: none;
-  z-index: -5;
-  opacity: 0.03;
-  overflow: hidden;
-}
-
-.matrix-column {
-  position: absolute;
-  top: -100%;
-  font-family: var(--font-fira), monospace;
-  font-size: 14px;
-  line-height: 1;
-  color: var(--neon-green);
-  writing-mode: vertical-rl;
-  text-orientation: upright;
-  animation: matrix-fall linear infinite;
-  white-space: nowrap;
-}
-
-@keyframes matrix-fall {
-  from { transform: translateY(0); }
-  to { transform: translateY(200vh); }
-}
-
-/* ============================================
    SCROLL ANIMATIONS
    ============================================ */
 
