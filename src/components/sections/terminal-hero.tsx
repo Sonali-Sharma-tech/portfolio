@@ -404,8 +404,6 @@ export function TerminalHero() {
                 <span>EXP: 3+ CYCLES</span>
                 <span className="text-border">│</span>
                 <span>MISSIONS: 10+</span>
-                <span className="text-border">│</span>
-                <span className="text-cyan/70">STATUS: OPEN TO COLLABORATE</span>
               </div>
               <div className="flex items-center gap-2">
                 <span suppressHydrationWarning className="text-magenta/60">{systemTime}</span>
