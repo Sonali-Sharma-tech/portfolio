@@ -715,48 +715,6 @@ export default function ProjectsPage() {
           </div>
         </div>
       </section>
-
-      {/* ========================================
-          CTA - Inline compact
-          ======================================== */}
-      <section className="section pt-8 pb-16">
-        <div className="container">
-          <div
-            className="relative bg-space-surface border border-cyan/20 p-8 md:p-12 overflow-hidden"
-            style={{
-              clipPath: 'polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 24px 100%, 0 calc(100% - 24px))',
-            }}
-          >
-            {/* Background accent */}
-            <div className="absolute inset-0 bg-gradient-to-br from-cyan/5 via-transparent to-magenta/5" />
-
-            <div className="relative flex flex-col md:flex-row items-center justify-between gap-6">
-              <div>
-                <h2 className="text-2xl md:text-3xl font-display mb-2">
-                  <span className="text-text-muted">Have a</span>{" "}
-                  <span className="text-gradient-cyber">project idea?</span>
-                </h2>
-                <p className="text-text-secondary font-mono text-sm">
-                  {"// Let's build something amazing together"}
-                </p>
-              </div>
-              <button
-                onClick={() => window.location.href = "mailto:sonalisharma.tech123@gmail.com"}
-                className="btn-glass btn-glass-lg group"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <rect width="20" height="16" x="2" y="4" rx="2" strokeWidth="2" />
-                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" strokeWidth="2" />
-                </svg>
-                <span>Get in Touch</span>
-                <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
     </>
   );
 }
